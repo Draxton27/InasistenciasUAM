@@ -33,6 +33,10 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::resource('profesores', ProfesorController::class);
 });
 
+Route::middleware(['auth', 'profesor'])->group(function () {
+    Route::get('/profesor/dashboard', [ProfesorDashboardController::class, 'index'])->name('profesor.dashboard');
+});
+
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::patch('admin/justificaciones/{id}/aprobar', [AdminController::class, 'aprobar'])->name('admin.justificaciones.aprobar');
