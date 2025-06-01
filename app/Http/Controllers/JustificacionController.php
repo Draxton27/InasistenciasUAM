@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Justificacion;
+use App\Models\Profesor;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 
 class JustificacionController extends Controller
 {
@@ -17,14 +20,16 @@ class JustificacionController extends Controller
 
     public function create()
     {
-        return view('justificaciones.create');
+        $profesores = Profesor::orderBy('nombre')->get();
+        return view('justificaciones.create', compact('profesores'));
+
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'clase_afectada' => 'required|string|max:255',
-            'docente' => 'required|string|max:255',
+            'profesor_id' => 'required|exists:users,id',
             'fecha' => 'required|date',
             'tipo_constancia' => 'required|in:trabajo,enfermedad,otro',
             'notas_adicionales' => 'nullable|string',

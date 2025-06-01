@@ -12,10 +12,15 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if(Auth::user() && Auth::user()->role !== 'admin')
-                    <x-nav-link :href="route('justificaciones.index')" :active="request()->routeIs('justificaciones.*')">
-                        {{ __('Justificaciones') }}
-                    </x-nav-link>
+                    @if(Auth::user() && Auth::user()->role === 'alumno')
+                        <x-nav-link :href="route('justificaciones.index')" :active="request()->routeIs('justificaciones.*')">
+                            {{ __('Justificaciones') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user() && Auth::user()->role === 'profesor')
+                        <x-nav-link :href="route('profesor.dashboard')" :active="request()->routeIs('profesor.*')">
+                            {{ __('Justificaciones') }}
+                        </x-nav-link>
                     @endif
                     @if(Auth::user() && Auth::user()->role === 'admin')
                         <x-nav-link :href="route('profesores.index')" :active="request()->routeIs('profesores.*')">
