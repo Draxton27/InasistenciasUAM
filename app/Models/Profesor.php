@@ -9,7 +9,7 @@ class Profesor extends Model
 {
     use HasFactory;
 
-    protected $table = 'profesores'; // 👈 Esto es esencial
+    protected $table = 'profesores';
 
     protected $fillable = [
         'user_id',
@@ -21,6 +21,6 @@ class Profesor extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'profesor_id');
     }
 }

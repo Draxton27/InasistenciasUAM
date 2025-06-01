@@ -12,10 +12,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('justificaciones', function (Blueprint $table) {
-        $table->id();
+         $table->id();
+        $table->foreignId('profesor_id')->constrained('users')->onDelete('cascade');
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->string('clase_afectada');
-        $table->string('docente');
         $table->date('fecha');
         $table->enum('tipo_constancia', ['trabajo', 'enfermedad', 'otro']);
         $table->text('notas_adicionales')->nullable();

@@ -14,7 +14,7 @@ class Justificacion extends Model
     protected $fillable = [
         'user_id',
         'clase_afectada',
-        'docente',
+        'profesor_id',
         'fecha',
         'tipo_constancia',
         'notas_adicionales',

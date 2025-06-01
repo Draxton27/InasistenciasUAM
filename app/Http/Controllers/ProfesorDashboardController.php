@@ -10,7 +10,11 @@ class ProfesorDashboardController extends Controller
     //
      public function index()
     {
-        $justificaciones = Justificacion::with('user')->latest()->get(); // Luego puedes filtrar por clase/docente
+        $profesor = Auth::user();
+
+        $justificaciones = Justificacion::where('profesor_id', $profesor->id)->latest()->get();
+
         return view('profesor.dashboard', compact('justificaciones'));
+
     }
 }

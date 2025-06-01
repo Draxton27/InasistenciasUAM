@@ -18,8 +18,13 @@
 
         <div>
             <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1">Docente</label>
-            <input type="text" name="docente" required
-                   class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-indigo-300 dark:placeholder-gray-500 shadow-sm focus:ring-2 focus:ring-indigo-400 transition" placeholder="Nombre del docente" />
+            <select name="profesor_id" required
+                    class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-indigo-400 transition">
+                <option disabled selected>Selecciona un docente</option>
+                @foreach($profesores as $profesor)
+                    <option value="{{ $profesor->user_id }}">{{ $profesor->nombre }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div>
