@@ -16,11 +16,18 @@ class Profesor extends Model
         'nombre',
         'email',
         'telefono',
-        'especialidad',
     ];
+
+    public function clases()
+    {
+        return $this->belongsToMany(Clase::class, 'clase_profesor')
+                    ->withPivot('grupo')
+                    ->withTimestamps();
+    }
+
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'profesor_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

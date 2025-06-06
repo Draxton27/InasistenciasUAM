@@ -11,20 +11,20 @@
         @csrf
 
         <div>
-            <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1">Clase Afectada</label>
-            <input type="text" name="clase_afectada" required
-                   class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-indigo-300 dark:placeholder-gray-500 shadow-sm focus:ring-2 focus:ring-indigo-400 transition" placeholder="Ej: Matemática General" />
+            <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1">Docente</label>
+            <select id="profesor_select" class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-indigo-400 transition">
+                <option disabled selected>Selecciona un docente</option>
+                @foreach($profesores as $profesor)
+                    <option value="{{ $profesor->id }}">{{ $profesor->nombre }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1">Docente</label>
-            <select name="profesor_id" required
-                    class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-indigo-400 transition">
-                <option disabled selected>Selecciona un docente</option>
-                @foreach($profesores as $profesor)
-                    <option value="{{ $profesor->user_id }}">{{ $profesor->nombre }}</option>
-                @endforeach
-            </select>
+            <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1">Clase Afectada</label>
+            <select name="clase_profesor_id" id="clase_profesor_select" required class="w-full px-5 py-3 rounded-lg border border-indigo-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-indigo-400 transition">
+                <option disabled selected>Selecciona una clase</option>
+            </select>
         </div>
 
         <div>
@@ -64,4 +64,21 @@
         </div>
     </form>
 </div>
+
+{{-- JS para cargar clases del profesor --}}
+<script>
+    const profesorSelect = document.getElementById('profesor_select');
+    const claseSelect = document.getElementById('clase_profesor_select');
+
+    profesorSelect.addEventListener('change', function () {
+        fetch(/api/profesor/${this.value}/clases)
+            .then(res => res.json())
+            .then(data => {
+                claseSelect.innerHTML = '<option disabled selected>Selecciona una clase</option>';
+                data.forEach(c => {
+                    claseSelect.innerHTML += <option value="${c.id}">${c.nombre} (Grupo ${c.grupo})</option>;
+                });
+            });
+    });
+</script>
 @endsection
