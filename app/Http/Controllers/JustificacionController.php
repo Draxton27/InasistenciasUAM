@@ -20,17 +20,16 @@ class JustificacionController extends Controller
 
     public function create()
     {
-        $profesores = Profesor::orderBy('nombre')->get();
-        return view('justificaciones.create', compact('profesores'), compact('profesores'));
-
+        $profesores = Profesor::with('clases')->get();
+        return view('justificaciones.create', compact('profesores'));
     }
+
+
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'clase_afectada' => 'required|string|max:255',
-            'profesor_id' => 'required|exists:users,id',
-            'profesor_id' => 'required|exists:users,id',
+            'clase_profesor_id' => 'required|exists:clase_profesor,id',
             'fecha' => 'required|date',
             'tipo_constancia' => 'required|in:trabajo,enfermedad,otro',
             'notas_adicionales' => 'nullable|string',
@@ -38,22 +37,22 @@ class JustificacionController extends Controller
         ]);
 
         if ($request->hasFile('archivo')) {
-            $file = $request->file('archivo');
+                $file = $request->file('archivo');
 
-            if ($file->isValid()) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $destination = storage_path('app/public/justificaciones');
+                if ($file->isValid()) {
+                    $filename = uniqid() . '_' . $file->getClientOriginalName();
+                    $destination = storage_path('app/public/justificaciones');
 
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0755, true);
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+
+                    $file->move($destination, $filename);
+                    $validated['archivo'] = 'justificaciones/' . $filename;
+                } else {
+                    return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
                 }
-
-                $file->move($destination, $filename);
-                $validated['archivo'] = 'justificaciones/' . $filename;
-            } else {
-                return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
             }
-        }
 
         $validated['user_id'] = Auth::id();
 
@@ -61,5 +60,6 @@ class JustificacionController extends Controller
 
         return redirect()->route('justificaciones.index')->with('success', 'Justificación enviada correctamente.');
     }
+
 
 }

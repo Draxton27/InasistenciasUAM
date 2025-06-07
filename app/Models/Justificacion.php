@@ -14,6 +14,7 @@ class Justificacion extends Model
     protected $fillable = [
         'user_id',
         'clase_afectada',
+        'clase_profesor_id',
         'profesor_id',
         'fecha',
         'tipo_constancia',
@@ -26,4 +27,10 @@ class Justificacion extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function claseProfesor()
+    {
+        return $this->belongsTo(ClaseProfesor::class);
+    }
+
 }

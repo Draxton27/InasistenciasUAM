@@ -9,13 +9,12 @@ use App\Models\Justificacion;
 class ProfesorDashboardController extends Controller
 {
     //
-     public function index()
+    public function index()
     {
-        $profesor = Auth::user();
-
+        $profesor = \App\Models\Profesor::where('user_id', Auth::id())->firstOrFail();
         $justificaciones = Justificacion::where('profesor_id', $profesor->id)->latest()->get();
 
         return view('profesor.dashboard', compact('justificaciones'));
-
     }
+
 }
