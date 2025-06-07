@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Profesor extends Model
+class Admin extends Model
 {
     use HasFactory;
 
-    protected $table = 'profesores';
+    protected $table = 'admins';
 
     protected $fillable = [
         'user_id',
         'nombre',
-        'email',
         'telefono',
         'foto',
     ];
@@ -22,12 +21,5 @@ class Profesor extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function clases()
-    {
-        return $this->belongsToMany(Clase::class, 'clase_profesor')
-                    ->withPivot('grupo')
-                    ->withTimestamps();
     }
 }

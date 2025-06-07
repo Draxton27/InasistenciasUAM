@@ -5,29 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Profesor extends Model
+class Estudiante extends Model
 {
     use HasFactory;
 
-    protected $table = 'profesores';
+    protected $table = 'estudiantes';
 
     protected $fillable = [
         'user_id',
+        'cif',
         'nombre',
+        'apellido',
         'email',
-        'telefono',
         'foto',
     ];
 
+    // Relación con User (autenticación)
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function clases()
-    {
-        return $this->belongsToMany(Clase::class, 'clase_profesor')
-                    ->withPivot('grupo')
-                    ->withTimestamps();
     }
 }
