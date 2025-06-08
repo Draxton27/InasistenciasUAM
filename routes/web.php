@@ -37,24 +37,23 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::resource('clases', ClaseController::class);
 });
 
-Route::middleware(['auth', 'profesor'])->group(function () {
-    Route::get('/profesor/dashboard', [ProfesorDashboardController::class, 'index'])->name('profesor.dashboard');
-    Route::get('/api/profesor/{id}/clases', function ($id) {
-    $profesor = \App\Models\Profesor::with(['clases'])->findOrFail($id);
+use App\Models\ClaseProfesor;
 
-    return $profesor->clases->map(function ($clase) use ($profesor) {
-        $pivot = \App\Models\ClaseProfesor::where('clase_id', $clase->id)
-                    ->where('profesor_id', $profesor->id)->first();
+Route::get('/api/profesor/{id}/clases', function ($id) {
+    $clases = ClaseProfesor::with('clase')
+        ->where('profesor_id', $id)
+        ->get()
+        ->map(function ($registro) {
+            return [
+                'id' => $registro->id,
+                'nombre' => $registro->clase->name,
+                'grupo' => $registro->grupo,
+            ];
+        });
 
-        return [
-            'id' => $pivot->id,
-            'nombre' => $clase->name,
-            'grupo' => $pivot->grupo,
-        ];
-    });
+    return response()->json($clases);
 });
 
-});
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');

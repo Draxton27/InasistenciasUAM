@@ -13,7 +13,9 @@
             <div class="flex justify-between items-start gap-4">
                 <div>
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-white">
-                        {{ $j->user->name }} — {{ $j->clase_afectada }}
+                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            {{ $j->user->name }} — {{ $j->claseProfesor->clase->name ?? 'Clase desconocida' }} (Grupo {{ $j->claseProfesor->grupo ?? '-' }})
+                        </h4>
                     </h4>
                     <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">
                         {{ \Carbon\Carbon::parse($j->fecha)->translatedFormat('d F, Y') }} &nbsp;|&nbsp; {{ ucfirst($j->tipo_constancia) }}

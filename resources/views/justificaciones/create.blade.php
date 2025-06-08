@@ -65,20 +65,25 @@
     </form>
 </div>
 
-{{-- JS para cargar clases del profesor --}}
 <script>
-    const profesorSelect = document.getElementById('profesor_select');
-    const claseSelect = document.getElementById('clase_profesor_select');
+const profesorSelect = document.getElementById('profesor_select');
+const claseSelect = document.getElementById('clase_profesor_select');
 
-    profesorSelect.addEventListener('change', function () {
-        fetch(/api/profesor/${this.value}/clases)
-            .then(res => res.json())
-            .then(data => {
-                claseSelect.innerHTML = '<option disabled selected>Selecciona una clase</option>';
-                data.forEach(c => {
-                    claseSelect.innerHTML += <option value="${c.id}">${c.nombre} (Grupo ${c.grupo})</option>;
-                });
+profesorSelect.addEventListener('change', function () {
+    const profesorId = this.value;
+
+    fetch(`/api/profesor/${profesorId}/clases`)
+        .then(res => res.json())
+        .then(data => {
+            claseSelect.innerHTML = '<option disabled selected>Selecciona una clase</option>';
+            data.forEach(c => {
+                claseSelect.innerHTML += `<option value="${c.id}">${c.nombre} (Grupo ${c.grupo})</option>`;
             });
-    });
+        })
+        .catch(error => {
+            console.error('Error al cargar clases:', error);
+        });
+});
 </script>
+
 @endsection

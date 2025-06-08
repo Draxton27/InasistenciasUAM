@@ -14,6 +14,15 @@
         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-6 mb-6">
             <div class="flex justify-between items-start">
                 <div>
+                    @if ($profesor->foto)
+                        <img src="{{ asset('storage/' . $profesor->foto) }}" alt="Foto de {{ $profesor->nombre }}"
+                            class="h-12 w-12 rounded-full object-cover shadow border border-gray-300 dark:border-gray-700">
+                    @else
+                        <div class="h-12 w-12 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-white">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    @endif
+
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $profesor->nombre }}</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-300">{{ $profesor->email }}</p>
 

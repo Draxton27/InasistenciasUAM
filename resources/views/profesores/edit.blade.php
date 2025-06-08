@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('profesores.update', $profesor) }}">
+    <form method="POST" action="{{ route('profesores.update', $profesor) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -28,6 +28,28 @@
             <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
             <input type="email" name="email" id="email" value="{{ old('email', $profesor->email) }}"
                 class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto de perfil</label>
+
+            @if ($profesor->foto)
+            <input type="hidden" name="eliminar_foto" id="eliminar_foto" value="0">
+                <div id="foto-preview" class="relative inline-block mb-2">
+                <img src="{{ asset('storage/' . $profesor->foto) }}" alt="Foto actual"
+                    class="h-20 w-20 object-cover rounded-md border border-gray-300 dark:border-gray-600">
+                <button type="button" onclick="eliminarFoto()"
+                        class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">
+                    &times;
+                </button>
+                </div>
+            @endif
+
+            <div id="upload-foto" style="{{ $profesor->foto ? 'display: none;' : '' }}">
+                <input type="file" name="foto"
+                    class="block mt-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md
+                            file:border-0 file:text-sm file:font-semibold
+                            file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
+            </div>
         </div>
 
         <div class="mb-6">
@@ -95,4 +117,15 @@
         index++;
     }
 </script>
+<script>
+    function eliminarFoto() {
+    document.getElementById('foto-preview').remove();
+    document.getElementById('eliminar_foto').value = 1;
+
+    const uploadFoto = document.getElementById('upload-foto');
+    uploadFoto.style.display = 'block';
+}
+
+</script>
+
 @endsection

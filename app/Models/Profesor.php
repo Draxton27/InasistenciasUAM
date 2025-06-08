@@ -15,7 +15,6 @@ class Profesor extends Model
         'user_id',
         'nombre',
         'email',
-        'telefono',
         'foto',
     ];
 

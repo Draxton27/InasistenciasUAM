@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class ProfesorController extends Controller
@@ -27,7 +28,7 @@ class ProfesorController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            // 'telefono' => 'nullable|string|max:20',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $user = User::create([
@@ -37,12 +38,25 @@ class ProfesorController extends Controller
             'role' => 'profesor',
         ]);
 
-        $profesor = Profesor::create([
-            'user_id' => $user->id,
-            'nombre' => $data['nombre'],
-            'email' => $data['email'],
-            // 'telefono' => $data['telefono'],
-        ]);
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            if($file->isValid()) {
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $destination = storage_path('app/public/profesores');
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+                $data['foto'] = 'profesores/' . $filename;
+            } else {
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            }
+        }
+
+        $data['user_id'] = $user->id;
+        $profesor = Profesor::create($data);
 
         if ($request->has('clase_grupo')) {
             foreach ($request->clase_grupo as $entry) {
@@ -69,21 +83,47 @@ class ProfesorController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'required|email|unique:profesores,email,' . $profesor->id,
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $profesor->update($data);
+        if ($request->hasFile('foto')) {
 
-        $clases = $request->input('clases', []);
-        $grupos = $request->input('grupos', []);
+            $file = $request->file('foto');
+            if ($file->isValid()) {
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $destination = storage_path('app/public/profesores');
 
-        $sincronizar = [];
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
 
-        foreach ($clases as $claseId) {
-            $grupo = $grupos[$claseId] ?? null;
-            $sincronizar[$claseId] = ['grupo' => $grupo];
+                $file->move($destination, $filename);
+                $data['foto'] = 'profesores/' . $filename;
+            } else {
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            }
         }
 
-        $profesor->clases()->detach(); // limpia todo
+        if ($request->input('eliminar_foto') === "1" && $profesor->foto) {
+            if (Storage::disk('public')->exists($profesor->foto)) {
+                Storage::disk('public')->delete($profesor->foto);
+                Log::info("Foto eliminada del sistema de archivos: {$profesor->foto}");
+            } else {
+                Log::warning("No se encontró la foto en el disco para eliminar: {$profesor->foto}");
+            }
+
+            $data['foto'] = null;
+        }
+
+        if ($profesor->user) {
+            $profesor->user->update([
+                'name' => $data['nombre'],
+                'email' => $data['email'],
+            ]);
+            Log::info("Usuario actualizado para el profesor ID {$profesor->id}");
+        }
+        $profesor->update($data);
+        $profesor->clases()->detach();
 
         if ($request->has('clase_grupo')) {
             foreach ($request->clase_grupo as $entry) {
@@ -95,9 +135,9 @@ class ProfesorController extends Controller
             }
         }
 
-
         return redirect()->route('profesores.index')->with('success', 'Profesor actualizado.');
     }
+
 
     public function destroy($id)
     {

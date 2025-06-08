@@ -30,7 +30,7 @@ class Justificacion extends Model
 
     public function claseProfesor()
     {
-        return $this->belongsTo(ClaseProfesor::class);
+        return $this->belongsTo(ClaseProfesor::class, 'clase_profesor_id');
     }
 
 }

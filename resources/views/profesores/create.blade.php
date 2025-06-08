@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('profesores.store') }}" method="POST">
+    <form action="{{ route('profesores.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -31,6 +31,13 @@
                 <input type="email" name="email" id="email" value="{{ old('email') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
+            <div class="mb-4">
+    <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto</label>
+    <input type="file" name="foto" id="foto"
+           class="block w-full text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-100
+                  file:text-indigo-700 hover:file:bg-indigo-200" />
+</div>
         </div>
 
         <div class="mt-6">
