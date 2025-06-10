@@ -27,39 +27,49 @@ class JustificacionController extends Controller
 
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'clase_profesor_id' => 'required|exists:clase_profesor,id',
-            'fecha' => 'required|date',
-            'tipo_constancia' => 'required|in:trabajo,enfermedad,otro',
-            'notas_adicionales' => 'nullable|string',
-            'archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ]);
+{
+    $request->validate([
+        'justificaciones' => 'required|array|min:1',
+        'justificaciones.*.clase_profesor_id' => 'required|exists:clase_profesor,id',
+        'justificaciones.*.fecha' => 'required|date',
+        'tipo_constancia' => 'required|in:trabajo,enfermedad,otro',
+        'notas_adicionales' => 'nullable|string',
+        'archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
 
-        if ($request->hasFile('archivo')) {
-                $file = $request->file('archivo');
+    $archivoPath = null;
 
-                if ($file->isValid()) {
-                    $filename = uniqid() . '_' . $file->getClientOriginalName();
-                    $destination = storage_path('app/public/justificaciones');
+    if ($request->hasFile('archivo')) {
+        $file = $request->file('archivo');
 
-                    if (!file_exists($destination)) {
-                        mkdir($destination, 0755, true);
-                    }
+        if ($file->isValid()) {
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $destination = storage_path('app/public/justificaciones');
 
-                    $file->move($destination, $filename);
-                    $validated['archivo'] = 'justificaciones/' . $filename;
-                } else {
-                    return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
-                }
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
             }
 
-        $validated['user_id'] = Auth::id();
-
-        Justificacion::create($validated);
-
-        return redirect()->route('justificaciones.index')->with('success', 'Justificación enviada correctamente.');
+            $file->move($destination, $filename);
+            $archivoPath = 'justificaciones/' . $filename;
+        } else {
+            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
+        }
     }
+
+    foreach ($request->justificaciones as $entry) {
+        Justificacion::create([
+            'user_id' => Auth::id(),
+            'clase_profesor_id' => $entry['clase_profesor_id'],
+            'fecha' => $entry['fecha'],
+            'tipo_constancia' => $request->input('tipo_constancia'),
+            'notas_adicionales' => $request->input('notas_adicionales'),
+            'archivo' => $archivoPath,
+        ]);
+    }
+
+    return redirect()->route('justificaciones.index')->with('success', 'Justificación(es) enviadas correctamente.');
+}
 
 
 }
