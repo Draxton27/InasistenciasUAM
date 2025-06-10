@@ -58,4 +58,14 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function profesor()
+    {
+        return $this->hasOne(Profesor::class);
+    }
+
+    public function estudiante()
+    {
+        return $this->hasOne(Estudiante::class);
+    }
+
 }

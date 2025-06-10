@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ProfesorController extends Controller
 {
@@ -156,4 +157,57 @@ class ProfesorController extends Controller
         return redirect()->route('profesores.index')->with('success', 'Profesor y su usuario eliminados correctamente.');
     }
 
+    public function updateProfile(Request $request)
+    {
+        $profesor = Auth::user()->profesor;
+
+        if (!$profesor) {
+            return back()->withErrors(['profesor' => 'No se encontró el perfil del profesor.']);
+        }
+
+        $data = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            if ($file->isValid()) {
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $destination = storage_path('app/public/profesores');
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+                $data['foto'] = 'profesores/' . $filename;
+            } else {
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            }
+        }
+
+        if ($request->input('eliminar_foto') === "1" && $profesor->foto) {
+            if (Storage::disk('public')->exists($profesor->foto)) {
+                Storage::disk('public')->delete($profesor->foto);
+            }
+            $data['foto'] = null;
+        }
+
+        $user = Auth::user();
+        $user->update([
+            'name' => $data['nombre'],
+            'email' => $data['email'],
+        ]);
+
+        Log::info("Foto  {$data['foto']}, {$profesor->foto}");
+        $profesor->update([
+            'nombre' => $data['nombre'],
+            'email' => $data['email'],
+            'foto' => $data['foto']
+        ]);
+
+        return back()->with('success', 'Perfil actualizado correctamente.');
+    }
 }

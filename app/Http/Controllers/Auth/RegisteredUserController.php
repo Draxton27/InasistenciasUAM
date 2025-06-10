@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Models\Estudiante;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -27,24 +28,52 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        $data = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'cif' => 'required|string|max:20|unique:estudiantes,cif',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['nombre'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'alumno',
         ]);
 
-        event(new Registered($user));
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            if ($file->isValid()) {
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $destination = storage_path('app/public/estudiantes');
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+                $data['foto'] = 'estudiantes/' . $filename;
+            } else {
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            }
+        }
+
+        Estudiante::create([
+            'user_id' => $user->id,
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'cif' => $data['cif'],
+            'email' => $data['email'],
+            'foto' => $data['foto'] ?? null,
+        ]);
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('justificaciones.index');
     }
 }
