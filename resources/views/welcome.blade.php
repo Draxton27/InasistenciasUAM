@@ -140,7 +140,7 @@
                     Envía justificaciones con respaldo de constancia.
                 </li>
                 <li>
-                    <span class="icon">🧑‍🏫</span>
+                    <span class="icon">🧑</span>
                     Visualiza y gestiona las solicitudes según tu rol.
                 </li>
                 <li>
