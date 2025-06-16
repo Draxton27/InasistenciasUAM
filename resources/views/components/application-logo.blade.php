@@ -1,1 +1,1 @@
-<img src="https://uamvirtual.uam.edu.ni/grado/pluginfile.php/1/theme_space/customlogo/1741363208/logoUAMv.png" style="max-width: 160px; height: auto;"/>
+<img src="https://res.cloudinary.com/startup-grind/image/upload/c_fill,dpr_2,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/logo-uam-2.png" style="max-width: 120px; height: auto;"/>

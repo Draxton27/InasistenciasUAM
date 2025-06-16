@@ -3,11 +3,11 @@
 @section('content')
 <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-8">
-        <h2 class="text-3xl font-extrabold text-indigo-700 dark:text-indigo-400 tracking-tight">
+        <h2 class="text-3xl font-extrabold text-[#009CA9] dark:text-[#009CA9] tracking-tight">
             Mis Justificaciones
         </h2>
         <a href="{{ route('justificaciones.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md transition">
+           class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition">
             <i class="fas fa-plus"></i> Nueva Justificación
         </a>
     </div>
@@ -36,7 +36,7 @@
             @if ($j->archivo)
                 <div class="mt-4">
                     <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
-                       class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+                       class="text-sm text-[#009CA9] dark:text-[#009CA9] hover:underline flex items-center gap-1">
                         <i class="fas fa-paperclip"></i> Ver archivo adjunto
                     </a>
                 </div>

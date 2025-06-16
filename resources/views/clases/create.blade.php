@@ -1,79 +1,93 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mb-6">Crear Nueva Clase</h2>
+<div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <!-- Encabezado -->
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-[#009CA9] tracking-tight">
+            Nueva Clase
+        </h2>
+        <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">
+            Completa el formulario para registrar una nueva clase
+        </p>
+    </div>
 
-    <form method="POST" action="{{ route('clases.store') }}">
-        @csrf
+    <!-- Formulario -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <form action="{{ route('clases.store') }}" method="POST">
+            @csrf
 
-        <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de la Clase</label>
-            <input type="text" name="name" id="name"
-                class="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                required>
-        </div>
-
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Asignar Profesores (con grupo)</label>
-            <div id="profesores-container" class="space-y-3">
-                <div class="flex items-center gap-4">
-                    <select name="profesor_grupo[0][profesor_id]"
-                            class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                        <option value="">Selecciona un profesor</option>
-                        @foreach ($profesores as $profesor)
-                            <option value="{{ $profesor->id }}">{{ $profesor->nombre }}</option>
-                        @endforeach
-                    </select>
-                    <input type="text" name="profesor_grupo[0][grupo]" placeholder="Grupo"
-                           class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                </div>
+            <!-- Nombre -->
+            <div class="mb-6">
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nombre de la Clase
+                </label>
+                <input type="text" name="name" id="name" 
+                       class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                              focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                              dark:bg-gray-700 dark:text-white"
+                       value="{{ old('name') }}" required>
+                @error('name')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
-            <button type="button" onclick="agregarProfesorGrupo()"
-                class="mt-3 px-3 py-2 bg-indigo-500 text-white rounded-md text-sm hover:bg-indigo-600">
-                + Añadir otro profesor
-            </button>
-        </div>
+            <!-- Notas -->
+            <div class="mb-6">
+                <label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Notas
+                </label>
+                <textarea name="note" id="note" rows="3"
+                          class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                                 focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                                 dark:bg-gray-700 dark:text-white">{{ old('note') }}</textarea>
+                @error('note')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <div class="flex justify-end">
-            <button type="submit"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                Guardar Clase
-            </button>
-        </div>
-    </form>
+            <!-- Profesores -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Profesores Asignados
+                </label>
+                <div class="space-y-4">
+                    @foreach($profesores as $profesor)
+                        <div class="flex items-center">
+                            <input type="checkbox" name="profesores[]" value="{{ $profesor->id }}" 
+                                   id="profesor_{{ $profesor->id }}"
+                                   class="h-4 w-4 text-[#009CA9] focus:ring-[#009CA9] border-gray-300 rounded">
+                            <label for="profesor_{{ $profesor->id }}" 
+                                   class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                {{ $profesor->nombre }}
+                            </label>
+                            <input type="text" name="grupos[{{ $profesor->id }}]" 
+                                   placeholder="Grupo"
+                                   class="ml-4 px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 
+                                          focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                                          dark:bg-gray-700 dark:text-white">
+                        </div>
+                    @endforeach
+                </div>
+                @error('profesores')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-4">
+                <a href="{{ route('clases.index') }}" 
+                   class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium 
+                          text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium 
+                               rounded-xl shadow-md transition">
+                    Guardar Clase
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-
-<script>
-    let profIndex = 1;
-    const profesores = @json($profesores);
-
-    function agregarProfesorGrupo() {
-        const container = document.getElementById('profesores-container');
-
-        const row = document.createElement('div');
-        row.className = 'flex items-center gap-4 mt-2';
-
-        let selectHTML = `<select name="profesor_grupo[${profIndex}][profesor_id]"
-            class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-            <option value="">Selecciona un profesor</option>`;
-        profesores.forEach(p => {
-            selectHTML += <option value="${p.id}">${p.nombre}</option>;
-        });
-        selectHTML += </select>;
-
-        row.innerHTML = `
-            ${selectHTML}
-            <input type="text" name="profesor_grupo[${profIndex}][grupo]" placeholder="Grupo"
-                class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-            <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 text-sm ml-2">
-                Quitar
-            </button>
-        `;
-
-        container.appendChild(row);
-        profIndex++;
-    }
-</script>
 @endsection
