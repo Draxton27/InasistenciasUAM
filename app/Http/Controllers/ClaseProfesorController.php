@@ -28,6 +28,6 @@ class ClaseProfesorController extends Controller
 
         ClaseProfesor::create($request->all());
 
-        return redirect()->route('clases_profesor.index')->with('success', 'Clase asignada correctamente.');
+        return redirect()->route('clases.index')->with('success', 'Clase asignada correctamente.');
     }
 }
