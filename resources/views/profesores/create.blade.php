@@ -1,151 +1,143 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl font-extrabold text-indigo-700 dark:text-indigo-400 tracking-tight mb-6">
-        Registrar nuevo profesor
-    </h2>
-
-    @if ($errors->any())
-        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
-            <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('profesores.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre completo</label>
-                <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            </div>
-
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Correo electrónico</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            </div>
-            <div class="mb-4">
-    <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto</label>
-    <input type="file" name="foto" id="foto"
-           class="block w-full text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-100
-                  file:text-indigo-700 hover:file:bg-indigo-200" />
-</div>
-        </div>
-
-        <div class="mt-6">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Asignar clases (con grupo)</label>
-    <div id="clase-grupo-wrapper" class="space-y-3">
-        <div class="flex items-center gap-4">
-            <select name="clase_grupo[0][clase_id]"
-                    class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                <option value="">Selecciona una clase</option>
-                @foreach ($clases as $clase)
-                    <option value="{{ $clase->id }}">{{ $clase->name }}</option>
-                @endforeach
-            </select>
-            <input type="text" name="clase_grupo[0][grupo]" placeholder="Grupo"
-                   class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                   <!-- <div class="mt-4">
-        <button type="button" onclick="addClaseGrupo()"
-            class="inline-flex items-center px-3 py-2 bg-indigo-500 text-white rounded-md text-sm font-medium hover:bg-indigo-600">
-            + Añadir clase
-        </button>
-    </div> -->
-        </div>
+<div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <!-- Encabezado -->
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-[#009CA9] tracking-tight">
+            Nuevo Profesor
+        </h2>
+        <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">
+            Completa el formulario para registrar un nuevo profesor
+        </p>
     </div>
 
-    <button type="button" onclick="agregarGrupoClase()"
-            class="mt-3 px-3 py-2 bg-indigo-500 text-white rounded-md text-sm hover:bg-indigo-600">
-        + Añadir otra clase
-    </button>
+    <!-- Formulario -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <form action="{{ route('profesores.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <!-- Nombre -->
+            <div class="mb-6">
+                <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nombre Completo
+                </label>
+                <input type="text" name="nombre" id="nombre" 
+                       class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                              focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                              dark:bg-gray-700 dark:text-white"
+                       value="{{ old('nombre') }}" required>
+                @error('nombre')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Email -->
+            <div class="mb-6">
+                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Correo Electrónico
+                </label>
+                <input type="email" name="email" id="email" 
+                       class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                              focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                              dark:bg-gray-700 dark:text-white"
+                       value="{{ old('email') }}" required>
+                @error('email')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Foto -->
+            <div class="mb-6">
+                <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Foto de Perfil
+                </label>
+                <div class="mt-1 flex items-center">
+                    <div class="relative">
+                        <input type="file" name="foto" id="foto" 
+                               class="hidden" 
+                               accept="image/*">
+                        <label for="foto" 
+                               class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 
+                                      bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                      rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 
+                                      hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <i class="fas fa-upload"></i>
+                            Seleccionar imagen
+                        </label>
+                    </div>
+                    <div id="preview" class="ml-4 hidden">
+                        <img src="" alt="Preview" class="h-12 w-12 rounded-full object-cover">
+                    </div>
+                </div>
+                @error('foto')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Clases -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Clases Asignadas
+                </label>
+                <div class="space-y-4">
+                    @foreach($clases as $clase)
+                        <div class="flex items-center">
+                            <input type="checkbox" name="clases[]" value="{{ $clase->id }}" 
+                                   id="clase_{{ $clase->id }}"
+                                   class="h-4 w-4 text-[#009CA9] focus:ring-[#009CA9] border-gray-300 rounded">
+                            <label for="clase_{{ $clase->id }}" 
+                                   class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                {{ $clase->name }}
+                            </label>
+                            <input type="text" name="grupos[{{ $clase->id }}]" 
+                                   placeholder="Grupo"
+                                   class="ml-4 px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 
+                                          focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                                          dark:bg-gray-700 dark:text-white">
+                        </div>
+                    @endforeach
+                </div>
+                @error('clases')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-4">
+                <a href="{{ route('profesores.index') }}" 
+                   class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium 
+                          text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium 
+                               rounded-xl shadow-md transition">
+                    Guardar Profesor
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
-
-        <div class="mt-8 flex justify-end">
-            <a href="{{ route('profesores.index') }}"
-                class="mr-3 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                Cancelar
-            </a>
-            <button type="submit"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white hover:bg-indigo-700 transition">
-                Guardar profesor
-            </button>
-        </div>
-    </form>
-</div>
-
+@push('scripts')
 <script>
-    function toggleGrupoInput(checkbox) {
-        const input = checkbox.closest('div').querySelector('input[type="text"]');
-        input.disabled = !checkbox.checked;
-    }
+    // Preview de imagen
+    document.getElementById('foto').addEventListener('change', function(e) {
+        const preview = document.getElementById('preview');
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.querySelector('img').src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+        }
+    });
 </script>
-<script>
-    let index = 1;
-
-    function agregarGrupoClase() {
-    const wrapper = document.getElementById('clase-grupo-wrapper');
-
-    const newRow = document.createElement('div');
-    newRow.classList.add('flex', 'items-center', 'gap-4', 'mt-2');
-
-    newRow.innerHTML = `
-        <select name="clase_grupo[${index}][clase_id]"
-                class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-            <option value="">Selecciona una clase</option>
-            @foreach ($clases as $clase)
-                <option value="{{ $clase->id }}">{{ $clase->name }}</option>
-            @endforeach
-        </select>
-        <input type="text" name="clase_grupo[${index}][grupo]" placeholder="Grupo"
-               class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-        <button type="button"
-                onclick="this.parentElement.remove()"
-                class="text-red-500 hover:text-red-700 text-sm ml-2">
-            Quitar
-        </button>
-    `;
-    wrapper.appendChild(newRow);
-    index++;
-}
-
-</script>
-
-<script>
-    const clases = @json($clases);
-
-    function addClaseGrupo() {
-        const container = document.getElementById('clases-container');
-        const index = container.children.length;
-
-        const wrapper = document.createElement('div');
-        wrapper.className = "flex items-center gap-4";
-
-        let select = `<select name="clases[]" class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-            <option value="" disabled selected>Selecciona una clase</option>`;
-        clases.forEach(c => {
-            select += <option value="${c.id}">${c.name}</option>;
-        });
-        select += </select>;
-
-        wrapper.innerHTML = `
-            ${select}
-            <input type="text" name="grupos_temp[]" placeholder="Grupo"
-                class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm" />
-            <button type="button" onclick="this.closest('.flex').remove()"
-                class="text-red-500 hover:text-red-700 text-sm">Quitar</button>
-        `;
-
-        container.appendChild(wrapper);
-    }
-</script>
-
+@endpush
 @endsection

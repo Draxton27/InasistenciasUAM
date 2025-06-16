@@ -1,131 +1,151 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mb-6">Editar Profesor</h2>
+<div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <!-- Encabezado -->
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-[#009CA9] tracking-tight">
+            Editar Profesor
+        </h2>
+        <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">
+            Actualiza la información del profesor
+        </p>
+    </div>
 
-    @if ($errors->any())
-        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
-            <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <!-- Formulario -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <form action="{{ route('profesores.update', $profesor) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
 
-    <form method="POST" action="{{ route('profesores.update', $profesor) }}" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-
-        <div class="mb-4">
-            <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
-            <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $profesor->nombre) }}"
-                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        </div>
-
-        <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" name="email" id="email" value="{{ old('email', $profesor->email) }}"
-                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto de perfil</label>
-
-            @if ($profesor->foto)
-            <input type="hidden" name="eliminar_foto" id="eliminar_foto" value="0">
-                <div id="foto-preview" class="relative inline-block mb-2">
-                <img src="{{ asset('storage/' . $profesor->foto) }}" alt="Foto actual"
-                    class="h-20 w-20 object-cover rounded-md border border-gray-300 dark:border-gray-600">
-                <button type="button" onclick="eliminarFoto()"
-                        class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">
-                    &times;
-                </button>
-                </div>
-            @endif
-
-            <div id="upload-foto" style="{{ $profesor->foto ? 'display: none;' : '' }}">
-                <input type="file" name="foto"
-                    class="block mt-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md
-                            file:border-0 file:text-sm file:font-semibold
-                            file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
+            <!-- Nombre -->
+            <div class="mb-6">
+                <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nombre Completo
+                </label>
+                <input type="text" name="nombre" id="nombre" 
+                       class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                              focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                              dark:bg-gray-700 dark:text-white"
+                       value="{{ old('nombre', $profesor->nombre) }}" required>
+                @error('nombre')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
-        </div>
 
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Clases Asignadas (con grupo)</label>
-            <div id="clase-grupo-wrapper" class="space-y-3">
-                @foreach ($profesor->clases as $i => $clase)
-                    <div class="flex items-center gap-4">
-                        <select name="clase_grupo[{{ $i }}][clase_id]"
-                            class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                            @foreach ($clases as $opcion)
-                                <option value="{{ $opcion->id }}" {{ $opcion->id == $clase->id ? 'selected' : '' }}>
-                                    {{ $opcion->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <input type="text" name="clase_grupo[{{ $i }}][grupo]" value="{{ $clase->pivot->grupo }}"
-                            placeholder="Grupo"
-                            class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                        <button type="button" onclick="this.closest('.flex').remove()"
-                            class="text-red-500 hover:text-red-700 text-sm">
-                            Quitar
-                        </button>
+            <!-- Email -->
+            <div class="mb-6">
+                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Correo Electrónico
+                </label>
+                <input type="email" name="email" id="email" 
+                       class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                              focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                              dark:bg-gray-700 dark:text-white"
+                       value="{{ old('email', $profesor->email) }}" required>
+                @error('email')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Foto -->
+            <div class="mb-6">
+                <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Foto de Perfil
+                </label>
+                <div class="mt-1 flex items-center">
+                    <div class="relative">
+                        <input type="file" name="foto" id="foto" 
+                               class="hidden" 
+                               accept="image/*">
+                        <label for="foto" 
+                               class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 
+                                      bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                      rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 
+                                      hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <i class="fas fa-upload"></i>
+                            Cambiar imagen
+                        </label>
                     </div>
-                @endforeach
+                    <div id="preview" class="ml-4">
+                        @if($profesor->foto)
+                            <img src="{{ asset('storage/' . $profesor->foto) }}" 
+                                 alt="Foto de {{ $profesor->nombre }}" 
+                                 class="h-12 w-12 rounded-full object-cover">
+                        @else
+                            <div class="h-12 w-12 rounded-full bg-[#009CA9] flex items-center justify-center text-white">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @error('foto')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
-            <button type="button" onclick="agregarGrupoClase()"
-                class="mt-3 px-3 py-2 bg-indigo-500 text-white rounded-md text-sm hover:bg-indigo-600">
-                + Añadir otra clase
-            </button>
-        </div>
 
-        <div class="flex justify-end gap-3">
-            <a href="{{ route('profesores.index') }}"
-                class="inline-block px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                Cancelar
-            </a>
-            <button type="submit"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md">
-                Guardar cambios
-            </button>
-        </div>
-    </form>
+            <!-- Clases -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Clases Asignadas
+                </label>
+                <div class="space-y-4">
+                    @foreach($clases as $clase)
+                        <div class="flex items-center">
+                            <input type="checkbox" name="clases[]" value="{{ $clase->id }}" 
+                                   id="clase_{{ $clase->id }}"
+                                   class="h-4 w-4 text-[#009CA9] focus:ring-[#009CA9] border-gray-300 rounded"
+                                   {{ $profesor->clases->contains($clase->id) ? 'checked' : '' }}>
+                            <label for="clase_{{ $clase->id }}" 
+                                   class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                {{ $clase->name }}
+                            </label>
+                            <input type="text" name="grupos[{{ $clase->id }}]" 
+                                   placeholder="Grupo"
+                                   value="{{ $profesor->clases->contains($clase->id) ? $profesor->clases->find($clase->id)->pivot->grupo : '' }}"
+                                   class="ml-4 px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 
+                                          focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                                          dark:bg-gray-700 dark:text-white">
+                        </div>
+                    @endforeach
+                </div>
+                @error('clases')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-4">
+                <a href="{{ route('profesores.index') }}" 
+                   class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium 
+                          text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium 
+                               rounded-xl shadow-md transition">
+                    Actualizar Profesor
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
+@push('scripts')
 <script>
-    let index = {{ $profesor->clases->count() }};
-
-    function agregarGrupoClase() {
-        const wrapper = document.getElementById('clase-grupo-wrapper');
-
-        const newRow = document.createElement('div');
-        newRow.classList.add('flex', 'items-center', 'gap-4', 'mt-2');
-        newRow.innerHTML = `
-            <select name="clase_grupo[${index}][clase_id]"
-                class="w-1/2 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-                <option value="">Selecciona una clase</option>
-                @foreach ($clases as $clase)
-                    <option value="{{ $clase->id }}">{{ $clase->name }}</option>
-                @endforeach
-            </select>
-            <input type="text" name="clase_grupo[${index}][grupo]" placeholder="Grupo"
-                class="w-1/2 px-3 py-2 border rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm">
-        `;
-        wrapper.appendChild(newRow);
-        index++;
-    }
+    // Preview de imagen
+    document.getElementById('foto').addEventListener('change', function(e) {
+        const preview = document.getElementById('preview');
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="h-12 w-12 rounded-full object-cover">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
-<script>
-    function eliminarFoto() {
-    document.getElementById('foto-preview').remove();
-    document.getElementById('eliminar_foto').value = 1;
-
-    const uploadFoto = document.getElementById('upload-foto');
-    uploadFoto.style.display = 'block';
-}
-
-</script>
-
+@endpush
 @endsection

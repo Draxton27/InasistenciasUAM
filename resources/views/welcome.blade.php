@@ -110,6 +110,83 @@
                 padding: 1.5rem 1rem;
             }
         }
+        @media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        max-width: 100%;
+    }
+
+    .logo {
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: left;
+        line-height: 1.3;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+
+    nav a {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        border: 1px solid var(--primary);
+        background-color: var(--secondary);
+        color: var(--dark);
+        text-decoration: none;
+        flex: 1 0 auto;
+    }
+
+    nav a:hover {
+        background-color: var(--primary);
+        color: #fff;
+    }
+
+    .container {
+        margin: 1.5rem 0;
+        padding: 1.25rem;
+        border-radius: 14px;
+        gap: 1rem;
+    }
+
+    .intro h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .intro p {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .features li {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .features .icon {
+        width: 26px;
+        height: 26px;
+        font-size: 1rem;
+        margin-right: 0.75rem;
+    }
+
+}
+
     </style>
 </head>
 <body>

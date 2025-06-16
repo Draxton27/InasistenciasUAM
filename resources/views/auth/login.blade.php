@@ -23,7 +23,7 @@
             width: 100%;
             max-width: 420px;
             padding: 2rem;
-            background: rgba(255, 255, 255, 0.0); /* totalmente transparente */
+            background: rgba(255, 255, 255, 0.0);
             border-radius: 0;
             box-shadow: none;
         }
@@ -50,12 +50,21 @@
             margin-top: 0.3rem;
             font-size: 1rem;
             background-color: #fff;
+            transition: all 0.2s ease-in-out;
         }
 
         .login-form input:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 2px var(--secondary);
+        }
+
+        .login-form input.error {
+            border-color: var(--accent);
+        }
+
+        .login-form input.error:focus {
+            box-shadow: 0 0 0 2px rgba(210, 79, 107, 0.2);
         }
 
         .remember-me {
@@ -108,6 +117,28 @@
         .text-error {
             color: var(--accent);
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .error-message {
+            color: var(--accent);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            color: #059669;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
         }
     </style>
 
@@ -117,20 +148,20 @@
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" novalidate>
             @csrf
 
             <!-- Email Address -->
             <div class="mb-4">
                 <x-input-label for="email" :value="__('Correo electrónico')" />
-                <x-text-input id="email" type="email" name="email" :value="old('email')" required autofocus />
+                <x-text-input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="email" />
                 <x-input-error :messages="$errors->get('email')" class="text-error mt-2" />
             </div>
 
             <!-- Password -->
             <div class="mb-4">
                 <x-input-label for="password" :value="__('Contraseña')" />
-                <x-text-input id="password" type="password" name="password" required />
+                <x-text-input id="password" type="password" name="password" required autocomplete="current-password" />
                 <x-input-error :messages="$errors->get('password')" class="text-error mt-2" />
             </div>
 
@@ -139,6 +170,7 @@
                 <input id="remember_me" type="checkbox" name="remember">
                 <label for="remember_me">{{ __('Recuérdame') }}</label>
             </div>
+
             <div class="actions flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4">
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline transition-all duration-150">

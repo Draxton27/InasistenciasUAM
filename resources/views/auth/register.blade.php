@@ -76,6 +76,7 @@
             border-radius: 8px;
             font-size: 1rem;
             background: #fff;
+            transition: all 0.2s ease-in-out;
         }
 
         input:focus {
@@ -84,9 +85,38 @@
             box-shadow: 0 0 0 2px var(--secondary);
         }
 
+        input.error {
+            border-color: var(--accent);
+        }
+
+        input.error:focus {
+            box-shadow: 0 0 0 2px rgba(210, 79, 107, 0.2);
+        }
+
         .text-error {
             color: var(--accent);
             font-size: 0.9rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .error-message {
+            color: var(--accent);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            color: #059669;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
             margin-top: 0.25rem;
         }
 
@@ -124,7 +154,7 @@
         }
     </style>
 
-    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" novalidate>
         <h2>Registro</h2>
         @csrf
         <div class="register-columns">
@@ -132,22 +162,22 @@
             <div class="register-column">
                 <div>
                     <x-input-label for="nombre" :value="__('Nombres')" />
-                    <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus />
+                    <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus autocomplete="given-name" minlength="2" maxlength="50" />
                     <x-input-error :messages="$errors->get('nombre')" class="text-error" />
                 </div>
                 <div>
                     <x-input-label for="apellido" :value="__('Apellidos')" />
-                    <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required />
+                    <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required autocomplete="family-name" minlength="2" maxlength="50" />
                     <x-input-error :messages="$errors->get('apellido')" class="text-error" />
                 </div>
                 <div>
                     <x-input-label for="cif" :value="__('CIF')" />
-                    <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required />
+                    <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required autocomplete="off" minlength="9" maxlength="9" />
                     <x-input-error :messages="$errors->get('cif')" class="text-error" />
                 </div>
                 <div>
                     <x-input-label for="email" :value="__('Correo electrónico')" />
-                    <x-text-input id="email" type="email" name="email" :value="old('email')" required />
+                    <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email" />
                     <x-input-error :messages="$errors->get('email')" class="text-error" />
                 </div>
             </div>
@@ -156,17 +186,17 @@
             <div class="register-column">
                 <div>
                     <x-input-label for="foto" :value="__('Foto (opcional)')" />
-                    <input type="file" name="foto" accept="image/*" />
+                    <input type="file" name="foto" accept="image/jpeg,image/png" />
                     <x-input-error :messages="$errors->get('foto')" class="text-error" />
                 </div>
                 <div>
                     <x-input-label for="password" :value="__('Contraseña')" />
-                    <x-text-input id="password" type="password" name="password" required />
+                    <x-text-input id="password" type="password" name="password" required autocomplete="new-password" minlength="8" />
                     <x-input-error :messages="$errors->get('password')" class="text-error" />
                 </div>
                 <div>
                     <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
-                    <x-text-input id="password_confirmation" type="password" name="password_confirmation" required />
+                    <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" minlength="8" />
                     <x-input-error :messages="$errors->get('password_confirmation')" class="text-error" />
                 </div>
                 <div class="form-footer">
