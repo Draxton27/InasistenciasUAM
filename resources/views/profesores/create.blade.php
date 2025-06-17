@@ -49,14 +49,15 @@
             <div id="clase-grupo-wrapper" class="space-y-3">
                 <div class="flex items-center gap-4">
                     <select name="clase_grupo[0][clase_id]"
-                        class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                        focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
-                        dark:bg-gray-700 dark:text-white text-sm" required>
-                        <option value="">Selecciona una clase</option>
-                        @foreach ($clases as $clase)
-                            <option value="{{ $clase->id }}">{{ $clase->name }}</option>
-                        @endforeach
-                    </select>
+                    class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+                    focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                    dark:bg-gray-700 dark:text-white text-sm">
+                    <option value="">-- Seleccione una clase (opcional) --</option>
+                    @foreach ($clases as $clase)
+                    <option value="{{ $clase->id }}">{{ $clase->name }}</option>
+                    @endforeach
+                </select>
+
                     <input type="text" name="clase_grupo[0][grupo]" placeholder="Grupo"
                         class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                         focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
@@ -99,13 +100,13 @@
 
         newRow.innerHTML = `
             <select name="clase_grupo[${index}][clase_id]"
-                class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
-                dark:bg-gray-700 dark:text-white text-sm" required>
-                <option value="">Selecciona una clase</option>
-                @foreach ($clases as $clase)
-                    <option value="{{ $clase->id }}">{{ $clase->name }}</option>
-                @endforeach
+            class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+            focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+            dark:bg-gray-700 dark:text-white text-sm">
+            <option value="">-- Seleccione una clase (opcional) --</option>
+            @foreach ($clases as $clase)
+            <option value="{{ $clase->id }}">{{ $clase->name }}</option>
+            @endforeach
             </select>
             <input type="text" name="clase_grupo[${index}][grupo]" placeholder="Grupo"
                 class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
