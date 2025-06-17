@@ -33,7 +33,16 @@ class RegisteredUserController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+            'required',
+            'email',
+            'unique:users,email',
+            function ($attribute, $value, $fail) {
+                if (!str_ends_with($value, '@uamv.edu.ni')) {
+                    $fail('El correo debe ser institucional (@uamv.edu.ni).');
+                }
+            },
+        ],
             'password' => 'required|string|min:8|confirmed',
             'cif' => 'required|string|max:20|unique:estudiantes,cif',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

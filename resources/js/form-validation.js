@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
 
+    // Validar correo institucional
+    function validateInstitutionalEmail(input) {
+    const institutionalDomain = '@uamv.edu.ni';
+    if (!input.value.endsWith(institutionalDomain)) {
+        showError(input, 'Debes ingresar tu correo institucional (@uamv.edu.ni)');
+        return false;
+    }
+    return true;
+    }
+
     // Validar fecha
     function validateDate(input) {
         if (input.value) {
@@ -161,6 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (input.type === 'email' && !validateEmail(input)) {
                 isValid = false;
+            }else if (!validateInstitutionalEmail(input)) {
+                isValid = false;
             }
 
             if (input.type === 'date' && !validateDate(input)) {
@@ -248,6 +260,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     validateNumber(this, min, max);
                 }
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            if (!form) return;
+
+           form.addEventListener('submit', function (event) {
+           const isValid = validateForm(form);
+           if (!isValid) {
+            event.preventDefault(); 
+            }
+           });
+            });
+
 
             // Limpiar mensajes al enfocar
             input.addEventListener('focus', function() {
