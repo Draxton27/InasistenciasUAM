@@ -146,6 +146,8 @@ class ProfesorController extends Controller
                 ->withInput();
         }
 
+        $data = $request->only('nombre', 'email');
+
         if ($request->hasFile('foto')) {
 
             $file = $request->file('foto');
