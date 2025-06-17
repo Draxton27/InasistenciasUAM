@@ -39,7 +39,10 @@ class ClaseController extends Controller
         'profesor_grupo' => 'nullable|array',
         'profesor_grupo.*.profesor_id' => 'nullable|exists:profesores,id',
         'profesor_grupo.*.grupo' => 'nullable|integer|min:1',
-    ]);
+    ], [
+    'profesor_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
+    'profesor_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
+]);
 
     // Validación personalizada
     $validator->after(function ($validator) use ($request) {
@@ -108,7 +111,10 @@ class ClaseController extends Controller
         'profesor_grupo' => 'nullable|array',
         'profesor_grupo.*.profesor_id' => 'nullable|exists:profesores,id',
         'profesor_grupo.*.grupo' => 'nullable|integer|min:1',
-    ]);
+    ], [
+    'profesor_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
+    'profesor_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
+]);
 
     // Validación personalizada: evitar grupos repetidos
     $validator->after(function ($validator) use ($request) {
