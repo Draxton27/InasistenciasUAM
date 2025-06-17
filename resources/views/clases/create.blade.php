@@ -36,11 +36,28 @@
                        class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
                               focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9]
                               dark:bg-gray-700 dark:text-white"
-                       value="{{ old('name') }}" required>
+                       value="{{ old('name') }}" required
+                       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+$"
+                       title="Solo letras, números y espacios permitidos">
                 @error('name')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                    <div class="mt-2 flex items-center gap-3 bg-gradient-to-r from-red-100 via-red-50 to-white border border-red-300 text-red-800 px-4 py-2 rounded-xl shadow-md animate-fade-in">
+                        <svg class="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01" />
+                        </svg>
+                        <span class="text-base font-semibold">{{ $message }}</span>
+                    </div>
+                    @enderror
+                    </div>
+                    <style>
+                        @keyframes fade-in {
+                            from { opacity: 0; transform: translateY(-8px);}
+                            to { opacity: 1; transform: translateY(0);}
+                        }
+                        .animate-fade-in {
+                            animation: fade-in 0.5s cubic-bezier(.4,0,.2,1);
+                        }
+                    </style>
 
             <!-- Notas (opcional) -->
             <div class="mb-6">
