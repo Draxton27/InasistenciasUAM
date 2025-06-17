@@ -12,6 +12,16 @@
         </p>
     </div>
 
+    @if ($errors->any())
+        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Formulario -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
         <form action="{{ route('clases.store') }}" method="POST">
