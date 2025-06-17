@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ProfesorController extends Controller
 {
@@ -26,15 +27,42 @@ class ProfesorController extends Controller
 
     public function store(Request $request)
 {
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'clase_grupo.*.grupo' => 'nullable|integer|min:1',
-    ], [
-        'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
-        'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
-    ]);
+    $validator = Validator::make($request->all(), [
+    'nombre' => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email',
+    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    'clase_grupo.*.grupo' => 'nullable|integer|min:1',
+], [
+    'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
+    'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
+]);
+
+
+    // Validación personalizada: clase + grupo no deben repetirse
+    $validator->after(function ($validator) use ($request) {
+        $combinaciones = [];
+
+        foreach ($request->input('clase_grupo', []) as $index => $entry) {
+            $clase = $entry['clase_id'] ?? null;
+            $grupo = $entry['grupo'] ?? null;
+
+            if ($clase && $grupo) {
+                $clave = $clase . '-' . $grupo;
+
+                if (in_array($clave, $combinaciones)) {
+                    $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase.");
+                } else {
+                    $combinaciones[] = $clave;
+                }
+            }
+        }
+    });
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
 
     $data = $request->only('nombre', 'email');
 
@@ -86,15 +114,37 @@ class ProfesorController extends Controller
 
     public function update(Request $request, Profesor $profesor)
     {
-        $data =  $request->validate([
+        $validator = Validator::make($request->all(),[
             'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => "required|email|unique:users,email,{$profesor->user_id}",
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'clase_grupo.*.grupo' => 'nullable|integer|min:1',
         ], [
             'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
             'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $combinaciones = [];
+            foreach ($request->input('clase_grupo', []) as $index => $entry) {
+                $clase = $entry['clase_id'] ?? null;
+                $grupo = $entry['grupo'] ?? null;                
+                if ($clase && $grupo) {
+                    $clave = $clase . '-' . $grupo;
+                    if (in_array($clave, $combinaciones)) {
+                        $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase.");
+                    } else {
+                        $combinaciones[] = $clave;
+                    }
+                }
+            }
+        });
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         if ($request->hasFile('foto')) {
 
