@@ -23,7 +23,7 @@ class ClaseProfesorController extends Controller
         $request->validate([
             'clase_id' => 'required|exists:clases,id',
             'profesor_id' => 'required|exists:profesores,id',
-            'grupo' => 'required|string|max:255',
+            'grupo' => 'required|integer|min:1',
         ]);
 
         ClaseProfesor::create($request->all());

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Clase;
 use App\Models\Profesor;
+use Illuminate\Support\Facades\Validator;
+
 
 class ClaseController extends Controller
 {
@@ -29,28 +31,54 @@ class ClaseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'profesor_grupo' => 'nullable|array',
+        'profesor_grupo.*.profesor_id' => 'nullable|exists:profesores,id',
+        'profesor_grupo.*.grupo' => 'nullable|integer|min:1',
+    ]);
 
-        $clase = Clase::create([
-            'name' => $request->name,
-        ]);
+    // Validación personalizada
+    $validator->after(function ($validator) use ($request) {
+        $gruposUsados = [];
 
-        if ($request->has('profesor_grupo')) {
-            foreach ($request->profesor_grupo as $entry) {
-                if (!empty($entry['profesor_id'])) {
-                    $clase->profesores()->attach($entry['profesor_id'], [
-                        'grupo' => $entry['grupo'] ?? null,
-                    ]);
+        foreach ($request->input('profesor_grupo', []) as $index => $entry) {
+            $grupo = $entry['grupo'] ?? null;
+
+            if (!empty($grupo)) {
+                if (in_array($grupo, $gruposUsados)) {
+                    $validator->errors()->add("profesor_grupo.$index.grupo", "Este grupo ya ha sido asignado a otro profesor.");
+                } else {
+                    $gruposUsados[] = $grupo;
                 }
             }
         }
+    });
 
-        return redirect()->route('clases.index')->with('success', 'Clase creada y profesores asignados correctamente.');
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+
+    // Crear clase
+    $clase = Clase::create([
+        'name' => $request->name,
+        'note' => $request->note ?? null,
+    ]);
+
+    // Asignar profesores
+    foreach ($request->profesor_grupo ?? [] as $entry) {
+        if (!empty($entry['profesor_id'])) {
+            $clase->profesores()->attach($entry['profesor_id'], [
+                'grupo' => $entry['grupo'] ?? null,
+            ]);
+        }
+    }
+
+    return redirect()->route('clases.index')->with('success', 'Clase creada y profesores asignados correctamente.');
+}
 
     /**
      * Display the specified resource.
@@ -74,29 +102,58 @@ class ClaseController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Clase $clase)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'profesor_grupo' => 'nullable|array',
+        'profesor_grupo.*.profesor_id' => 'nullable|exists:profesores,id',
+        'profesor_grupo.*.grupo' => 'nullable|integer|min:1',
+    ]);
 
-        $clase->update([
-            'name' => $request->name,
-        ]);
+    // Validación personalizada: evitar grupos repetidos
+    $validator->after(function ($validator) use ($request) {
+        $gruposUsados = [];
 
-        $clase->profesores()->detach();
+        foreach ($request->input('profesor_grupo', []) as $index => $entry) {
+            $grupo = $entry['grupo'] ?? null;
 
-        if ($request->has('profesor_grupo')) {
-            foreach ($request->profesor_grupo as $entry) {
-                if (!empty($entry['profesor_id'])) {
-                    $clase->profesores()->attach($entry['profesor_id'], [
-                        'grupo' => $entry['grupo'] ?? null,
-                    ]);
+            if (!empty($grupo)) {
+                if (in_array($grupo, $gruposUsados)) {
+                    $validator->errors()->add("profesor_grupo.$index.grupo", "Este grupo ya ha sido asignado a otro profesor.");
+                } else {
+                    $gruposUsados[] = $grupo;
                 }
             }
         }
+    });
 
-        return redirect()->route('clases.index')->with('success', 'Clase actualizada correctamente.');
+    // Si falla, redirigir con errores y datos anteriores
+    if ($validator->fails()) {
+        return redirect()->back()
+                         ->withErrors($validator)
+                         ->withInput()
+                         ->with('error', 'Corrige los errores del formulario.');
     }
+
+    // Actualizar clase
+    $clase->update([
+        'name' => $request->name,
+        'note' => $request->note ?? null,
+    ]);
+
+    // Actualizar relación con profesores
+    $clase->profesores()->detach();
+
+    foreach ($request->profesor_grupo ?? [] as $entry) {
+        if (!empty($entry['profesor_id'])) {
+            $clase->profesores()->attach($entry['profesor_id'], [
+                'grupo' => $entry['grupo'] ?? null,
+            ]);
+        }
+    }
+
+    return redirect()->route('clases.index')->with('success', 'Clase actualizada correctamente.');
+}
 
 
     /**

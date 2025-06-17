@@ -25,53 +25,58 @@ class ProfesorController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'clase_grupo.*.grupo' => 'nullable|integer|min:1',
+    ], [
+        'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
+        'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
+    ]);
 
-        $user = User::create([
-            'name' => $data['nombre'],
-            'email' => $data['email'],
-            'password' => Hash::make('password123'),
-            'role' => 'profesor',
-        ]);
+    $data = $request->only('nombre', 'email');
 
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            if($file->isValid()) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $destination = storage_path('app/public/profesores');
+    $user = User::create([
+        'name' => $data['nombre'],
+        'email' => $data['email'],
+        'password' => Hash::make('password123'),
+        'role' => 'profesor',
+    ]);
 
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0755, true);
-                }
+    if ($request->hasFile('foto')) {
+        $file = $request->file('foto');
+        if ($file->isValid()) {
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $destination = storage_path('app/public/profesores');
 
-                $file->move($destination, $filename);
-                $data['foto'] = 'profesores/' . $filename;
-            } else {
-                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
             }
+
+            $file->move($destination, $filename);
+            $data['foto'] = 'profesores/' . $filename;
+        } else {
+            return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
         }
-
-        $data['user_id'] = $user->id;
-        $profesor = Profesor::create($data);
-
-        if ($request->has('clase_grupo')) {
-            foreach ($request->clase_grupo as $entry) {
-                if (!empty($entry['clase_id'])) {
-                    $profesor->clases()->attach($entry['clase_id'], [
-                        'grupo' => $entry['grupo'] ?? null
-                    ]);
-                }
-            }
-        }
-
-
-        return redirect()->route('profesores.index')->with('success', 'Profesor creado exitosamente.');
     }
+
+    $data['user_id'] = $user->id;
+    $profesor = Profesor::create($data);
+
+    if ($request->has('clase_grupo')) {
+        foreach ($request->clase_grupo as $entry) {
+            if (!empty($entry['clase_id'])) {
+                $profesor->clases()->attach($entry['clase_id'], [
+                    'grupo' => $entry['grupo'] ?? null
+                ]);
+            }
+        }
+    }
+
+    return redirect()->route('profesores.index')->with('success', 'Profesor creado exitosamente.');
+}
 
     public function edit(Profesor $profesor)
     {
@@ -81,10 +86,14 @@ class ProfesorController extends Controller
 
     public function update(Request $request, Profesor $profesor)
     {
-        $data = $request->validate([
+        $data =  $request->validate([
             'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:profesores,email,' . $profesor->id,
+            'email' => 'required|email|unique:users,email',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'clase_grupo.*.grupo' => 'nullable|integer|min:1',
+        ], [
+            'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
+            'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
         ]);
 
         if ($request->hasFile('foto')) {
