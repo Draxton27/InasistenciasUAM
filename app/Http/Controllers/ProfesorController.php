@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProfesorController extends Controller
 {
@@ -37,26 +38,38 @@ class ProfesorController extends Controller
     'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
 ]);
 
-
     // Validación personalizada: clase + grupo no deben repetirse
     $validator->after(function ($validator) use ($request) {
-        $combinaciones = [];
+    $combinaciones = [];
 
-        foreach ($request->input('clase_grupo', []) as $index => $entry) {
-            $clase = $entry['clase_id'] ?? null;
-            $grupo = $entry['grupo'] ?? null;
+    foreach ($request->input('clase_grupo', []) as $index => $entry) {
+        $clase = $entry['clase_id'] ?? null;
+        $grupo = $entry['grupo'] ?? null;
 
-            if ($clase && $grupo) {
-                $clave = $clase . '-' . $grupo;
+        if ($clase && $grupo) {
+            $clave = $clase . '-' . $grupo;
 
-                if (in_array($clave, $combinaciones)) {
-                    $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase.");
-                } else {
-                    $combinaciones[] = $clave;
-                }
+            // Verifica si ya fue ingresada en el mismo request
+            if (in_array($clave, $combinaciones)) {
+                $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase en el formulario.");
+                continue;
+            }
+
+            $combinaciones[] = $clave;
+
+            $existe = DB::table('clase_profesor')
+                ->where('clase_id', $clase)
+                ->where('grupo', $grupo)
+                ->exists();
+
+            if ($existe) {
+                $validator->errors()->add("clase_grupo.$index.grupo", "Este grupo ya está asignado a otro profesor para esta clase.");
             }
         }
-    });
+    }
+});
+
+
 
     if ($validator->fails()) {
         return redirect()->back()
@@ -124,21 +137,39 @@ class ProfesorController extends Controller
             'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
         ]);
 
-        $validator->after(function ($validator) use ($request) {
-            $combinaciones = [];
-            foreach ($request->input('clase_grupo', []) as $index => $entry) {
-                $clase = $entry['clase_id'] ?? null;
-                $grupo = $entry['grupo'] ?? null;                
-                if ($clase && $grupo) {
-                    $clave = $clase . '-' . $grupo;
-                    if (in_array($clave, $combinaciones)) {
-                        $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase.");
-                    } else {
-                        $combinaciones[] = $clave;
-                    }
-                }
+        $validator->after(function ($validator) use ($request, $profesor) {
+        $combinaciones = [];
+
+    foreach ($request->input('clase_grupo', []) as $index => $entry) {
+        $clase = $entry['clase_id'] ?? null;
+        $grupo = $entry['grupo'] ?? null;
+
+        if ($clase && $grupo) {
+            $clave = $clase . '-' . $grupo;
+
+            // Validar duplicados en el formulario (sirve para no repetir el mismo grupo)
+            if (in_array($clave, $combinaciones)) {
+                $validator->errors()->add("clase_grupo.$index.grupo", "Ya se asignó este grupo a esta clase en el formulario.");
+                continue;
             }
-        });
+
+            $combinaciones[] = $clave;
+
+            //esto es para verificar desde base de datos si el mismo grupo y clase esta asignado a otro profesor
+            $existe = DB::table('clase_profesor')
+                ->where('clase_id', $clase)
+                ->where('grupo', $grupo)
+                ->where('profesor_id', '!=', $profesor->id) 
+                ->exists();
+
+            if ($existe) {
+                $validator->errors()->add("clase_grupo.$index.grupo", "Este grupo ya está asignado a otro profesor para esta clase.");
+            }
+        }
+    }
+});
+
+
         
         if ($validator->fails()) {
             return redirect()->back()
