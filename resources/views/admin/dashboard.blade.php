@@ -148,8 +148,16 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex gap-2 justify-end">
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-normal">
+                                <div class="flex gap-2 justify-end items-center">
+                                    @if ($j->archivo)
+                                        <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
+                                           class="inline-flex items-center gap-1 px-2 py-1 text-xs text-[#009CA9] hover:text-[#007a85] dark:text-[#009CA9] dark:hover:text-[#007a85] rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                           title="Ver archivo adjunto">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span>Ver archivo adjunto</span>
+                                        </a>
+                                    @endif
                                     <form action="{{ route('admin.justificaciones.aprobar', $j->id) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
