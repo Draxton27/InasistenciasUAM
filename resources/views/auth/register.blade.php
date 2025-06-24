@@ -134,6 +134,7 @@
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         <h2>Registro</h2>
         @csrf
+<<<<<<< Updated upstream
         <div class="register-columns">
             <!-- Primera columna -->
             <div class="register-column">
@@ -186,7 +187,70 @@
                 <div class="form-footer mt-6" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
                     <a href="{{ route('login') }}">{{ __('¿Ya tienes una cuenta?') }}</a>
                     <button type="submit" class="primary-button">{{ __('Registrarse') }}</button>
+=======
+        <div class="register-columns" style="flex-direction: column; gap: 1.2rem;">
+            <!-- Fila 1: Nombres | Apellidos -->
+            <div style="display: flex; gap: 2rem;">
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="nombre" :value="__('Nombres')" />
+                        <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus autocomplete="given-name" minlength="2" maxlength="50" />
+                        <x-input-error :messages="$errors->get('nombre')" class="text-error" />
+                    </div>
                 </div>
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="apellido" :value="__('Apellidos')" />
+                        <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required autocomplete="family-name" minlength="2" maxlength="50" />
+                        <x-input-error :messages="$errors->get('apellido')" class="text-error" />
+                    </div>
+                </div>
+            </div>
+            <!-- Fila 2: CIF | Correo electrónico -->
+            <div style="display: flex; gap: 2rem;">
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="cif" :value="__('CIF')" />
+                        <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required autocomplete="off" minlength="9" maxlength="9" />
+                        <x-input-error :messages="$errors->get('cif')" class="text-error" />
+                    </div>
+                </div>
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="email" :value="__('Correo electrónico')" />
+                        <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email" />
+                        <x-input-error :messages="$errors->get('email')" class="text-error" />
+                    </div>
+                </div>
+            </div>
+            <!-- Fila 3: Contraseña | Confirmar contraseña -->
+            <div style="display: flex; gap: 2rem;">
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="password" :value="__('Contraseña')" />
+                        <x-text-input id="password" type="password" name="password" required autocomplete="new-password" minlength="8" />
+                        <x-input-error :messages="$errors->get('password')" class="text-error" />
+                    </div>
+                </div>
+                <div class="register-column">
+                    <div>
+                        <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
+                        <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" minlength="8" />
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="text-error" />
+                    </div>
+>>>>>>> Stashed changes
+                </div>
+            </div>
+            <!-- Fila 4: Foto (opcional) -->
+            <div>
+                <x-input-label for="foto" :value="__('Foto (opcional)')" />
+                <input type="file" name="foto" accept="image/jpeg,image/png" style="width: 100%;" />
+                <x-input-error :messages="$errors->get('foto')" class="text-error" />
+            </div>
+            <!-- Footer -->
+            <div class="form-footer">
+                <a href="{{ route('login') }}">{{ __('¿Ya tienes una cuenta?') }}</a>
+                <button type="submit" class="primary-button">{{ __('Registrarse') }}</button>
             </div>
         </div>
     </form>
