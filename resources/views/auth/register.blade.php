@@ -17,45 +17,41 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 1rem;
+        }
+
+        form {
+            background-color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1280px;
+            margin: 2rem auto;
+            z-index: 2;
         }
 
         .register-columns {
             display: flex;
-            gap: 2rem;
-            justify-content: center;
+            gap: 3rem; /* Mayor espacio entre columnas */
+            justify-content: space-between;
             align-items: flex-start;
             width: 100%;
-            max-width: 900px;
-            margin: 2rem auto;
         }
 
         .register-column {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 2px 16px #48506522;
-            padding: 2rem;
-            flex: 1 1 0;
-            min-width: 300px;
-            max-width: 420px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
         }
 
-        @media (max-width: 900px) {
-            .register-columns {
-                flex-direction: column;
-                gap: 1.5rem;
-                max-width: 500px;
-            }
-        }
-
-        .register-column h2 {
-            font-size: 1.8rem;
+       
+        h2 {
+            font-size: 2rem;
             color: var(--primary);
             font-weight: 700;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         label {
@@ -73,8 +69,8 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 1rem;
-            margin-top: 0.25rem;
             background: #fff;
+            transition: all 0.2s ease-in-out;
         }
 
         input:focus {
@@ -83,18 +79,47 @@
             box-shadow: 0 0 0 2px var(--secondary);
         }
 
+        input.error {
+            border-color: var(--accent);
+        }
+
+        input.error:focus {
+            box-shadow: 0 0 0 2px rgba(210, 79, 107, 0.2);
+        }
+
         .text-error {
             color: var(--accent);
             font-size: 0.9rem;
             margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .error-message {
+            color: var(--accent);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            color: #059669;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
         }
 
         .form-footer {
-            margin-top: 1.5rem;
+            margin-top: 2rem;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
         }
 
         .form-footer a {
@@ -121,131 +146,58 @@
         .primary-button:hover {
             background-color: #007e8c;
         }
-
-        .mt-4 {
-            margin-top: 1rem;
-        }
-
-        .mt-6 {
-            margin-top: 1.5rem;
-        }
     </style>
 
-    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" novalidate>
         <h2>Registro</h2>
         @csrf
-<<<<<<< Updated upstream
-        <div class="register-columns">
-            <!-- Primera columna -->
-            <div class="register-column">
-                <!-- Nombres -->
-                <div>
-                    <x-input-label for="nombre" :value="__('Nombres')" />
-                    <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus />
-                    <x-input-error :messages="$errors->get('nombre')" class="text-error" />
-                </div>
-                <!-- Apellidos -->
-                <div>
-                    <x-input-label for="apellido" :value="__('Apellidos')" />
-                    <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required />
-                    <x-input-error :messages="$errors->get('apellido')" class="text-error" />
-                </div>
-                <!-- CIF -->
-                <div>
-                    <x-input-label for="cif" :value="__('CIF')" />
-                    <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required />
-                    <x-input-error :messages="$errors->get('cif')" class="text-error" />
-                </div>
-                <!-- Email -->
-                <div>
-                    <x-input-label for="email" :value="__('Correo electrónico')" />
-                    <x-text-input id="email" type="email" name="email" :value="old('email')" required />
-                    <x-input-error :messages="$errors->get('email')" class="text-error" />
-                </div>
-            </div>
-            <!-- Segunda columna -->
-            <div class="register-column">
-                <!-- Foto -->
-                <div>
-                    <x-input-label for="foto" :value="__('Foto (opcional)')" />
-                    <input type="file" name="foto" accept="image/*" />
-                    <x-input-error :messages="$errors->get('foto')" class="text-error" />
-                </div>
-                <!-- Contraseña -->
-                <div>
-                    <x-input-label for="password" :value="__('Contraseña')" />
-                    <x-text-input id="password" type="password" name="password" required />
-                    <x-input-error :messages="$errors->get('password')" class="text-error" />
-                </div>
-                <!-- Confirmar contraseña -->
-                <div>
-                    <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
-                    <x-text-input id="password_confirmation" type="password" name="password_confirmation" required />
-                    <x-input-error :messages="$errors->get('password_confirmation')" class="text-error" />
-                </div>
-                <!-- Footer -->
-                <div class="form-footer mt-6" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
-                    <a href="{{ route('login') }}">{{ __('¿Ya tienes una cuenta?') }}</a>
-                    <button type="submit" class="primary-button">{{ __('Registrarse') }}</button>
-=======
         <div class="register-columns" style="flex-direction: column; gap: 1.2rem;">
             <!-- Fila 1: Nombres | Apellidos -->
-            <div style="display: flex; gap: 2rem;">
+            <div style="display: flex; gap: 3rem;">
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="nombre" :value="__('Nombres')" />
-                        <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus autocomplete="given-name" minlength="2" maxlength="50" />
-                        <x-input-error :messages="$errors->get('nombre')" class="text-error" />
-                    </div>
+                    <x-input-label for="nombre" :value="__('Nombres')" />
+                    <x-text-input id="nombre" type="text" name="nombre" :value="old('nombre')" required autofocus autocomplete="given-name" minlength="2" maxlength="50" />
+                    <x-input-error :messages="$errors->get('nombre')" class="text-error" />
                 </div>
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="apellido" :value="__('Apellidos')" />
-                        <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required autocomplete="family-name" minlength="2" maxlength="50" />
-                        <x-input-error :messages="$errors->get('apellido')" class="text-error" />
-                    </div>
+                    <x-input-label for="apellido" :value="__('Apellidos')" />
+                    <x-text-input id="apellido" type="text" name="apellido" :value="old('apellido')" required autocomplete="family-name" minlength="2" maxlength="50" />
+                    <x-input-error :messages="$errors->get('apellido')" class="text-error" />
                 </div>
             </div>
             <!-- Fila 2: CIF | Correo electrónico -->
-            <div style="display: flex; gap: 2rem;">
+            <div style="display: flex; gap: 3rem;">
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="cif" :value="__('CIF')" />
-                        <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required autocomplete="off" minlength="9" maxlength="9" />
-                        <x-input-error :messages="$errors->get('cif')" class="text-error" />
-                    </div>
+                    <x-input-label for="cif" :value="__('CIF')" />
+                    <x-text-input id="cif" type="text" name="cif" :value="old('cif')" required autocomplete="off" minlength="9" maxlength="9" />
+                    <x-input-error :messages="$errors->get('cif')" class="text-error" />
                 </div>
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="email" :value="__('Correo electrónico')" />
-                        <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email" />
-                        <x-input-error :messages="$errors->get('email')" class="text-error" />
-                    </div>
+                    <x-input-label for="email" :value="__('Correo electrónico')" />
+                    <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email" />
+                    <x-input-error :messages="$errors->get('email')" class="text-error" />
                 </div>
             </div>
             <!-- Fila 3: Contraseña | Confirmar contraseña -->
-            <div style="display: flex; gap: 2rem;">
+            <div style="display: flex; gap: 3rem;">
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="password" :value="__('Contraseña')" />
-                        <x-text-input id="password" type="password" name="password" required autocomplete="new-password" minlength="8" />
-                        <x-input-error :messages="$errors->get('password')" class="text-error" />
-                    </div>
+                    <x-input-label for="password" :value="__('Contraseña')" />
+                    <x-text-input id="password" type="password" name="password" required autocomplete="new-password" minlength="8" />
+                    <x-input-error :messages="$errors->get('password')" class="text-error" />
                 </div>
                 <div class="register-column">
-                    <div>
-                        <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
-                        <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" minlength="8" />
-                        <x-input-error :messages="$errors->get('password_confirmation')" class="text-error" />
-                    </div>
->>>>>>> Stashed changes
+                    <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
+                    <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" minlength="8" />
+                    <x-input-error :messages="$errors->get('password_confirmation')" class="text-error" />
                 </div>
             </div>
-            <!-- Fila 4: Foto (opcional) -->
-            <div>
-                <x-input-label for="foto" :value="__('Foto (opcional)')" />
-                <input type="file" name="foto" accept="image/jpeg,image/png" style="width: 100%;" />
-                <x-input-error :messages="$errors->get('foto')" class="text-error" />
+            <!-- Fila 4: Foto (opcional) en una sola columna -->
+            <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                <div class="register-column">
+                    <x-input-label for="foto" :value="__('Foto (opcional)')" />
+                    <input type="file" name="foto" accept="image/jpeg,image/png" />
+                    <x-input-error :messages="$errors->get('foto')" class="text-error" />
+                </div>
             </div>
             <!-- Footer -->
             <div class="form-footer">
@@ -254,4 +206,4 @@
             </div>
         </div>
     </form>
-</x-guest-layout>
+    </x-guest-layout>
