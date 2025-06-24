@@ -148,16 +148,32 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-normal">
-                                <div class="flex gap-2 justify-end items-center">
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-normal">
+                                <div class="flex gap-2 justify-end items-center" x-data="{ editando: false }">
                                     @if ($j->archivo)
-                                        <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
-                                           class="inline-flex items-center gap-1 px-2 py-1 text-xs text-[#009CA9] hover:text-[#007a85] dark:text-[#009CA9] dark:hover:text-[#007a85] rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                           title="Ver archivo adjunto">
-                                            <i class="fas fa-paperclip"></i>
-                                            <span>Ver archivo adjunto</span>
-                                        </a>
-                                    @endif
+                                    <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
+                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs text-[#009CA9] 
+                                    hover:text-[#007a85] dark:text-[#009CA9] dark:hover:text-[#007a85] rounded-md 
+                                    hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Ver archivo adjunto">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>Ver archivo adjunto</span>
+                                </a>
+                                @endif
+                                
+                                @if (in_array($j->estado, ['aceptada', 'rechazada']))
+                                
+                            <button
+                                x-show="!editando"
+                                @click="editando = true"
+                                class="px-3 py-1 text-sm font-medium text-yellow-700 bg-yellow-100 hover:bg-yellow-200 rounded transition-colors">
+                                Editar
+                            </button>
+                            @endif
+                            
+                            
+                            @if ($j->estado === 'pendiente' || in_array($j->estado, ['aceptada', 'rechazada']))
+                            <template x-if="editando || '{{ $j->estado }}' === 'pendiente'">
+                                <div class="flex gap-2">
                                     <form action="{{ route('admin.justificaciones.aprobar', $j->id) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
@@ -165,7 +181,6 @@
                                             Aprobar
                                         </button>
                                     </form>
-
                                     <form action="{{ route('admin.justificaciones.rechazar', $j->id) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
@@ -174,7 +189,11 @@
                                         </button>
                                     </form>
                                 </div>
-                            </td>
+                            </template>
+                            @endif
+                        </div>
+                    </td>
+
                         </tr>
                     @empty
                         <tr>
