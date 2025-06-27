@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfesorDashboardController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\Auth\LoginRedirectController;
+use App\Http\Controllers\ReprogramacionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,5 +69,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'profesor'])->group(function () {
     Route::get('/profesor/dashboard', [ProfesorDashboardController::class, 'index'])->name('profesor.dashboard');
     Route::put('/perfil/profesor', [ProfesorController::class, 'updateProfile'])->name('profesor.profile.update');
+    Route::get('/reprogramaciones/create/{justificacion}', [ReprogramacionController::class, 'create'])->name('reprogramaciones.create');
+    Route::post('/reprogramaciones', [ReprogramacionController::class, 'store'])->name('reprogramaciones.store');
+    Route::get('/reprogramaciones/{reprogramacion}/edit', [\App\Http\Controllers\ReprogramacionController::class, 'edit'])->name('reprogramaciones.edit');
+    Route::put('/reprogramaciones/{reprogramacion}', [\App\Http\Controllers\ReprogramacionController::class, 'update'])->name('reprogramaciones.update');
 });
 require __DIR__.'/auth.php';
