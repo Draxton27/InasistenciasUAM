@@ -59,6 +59,39 @@
                         {{ $j->notas_adicionales }}
                     </p>
                 @endif
+
+                @if ($j->reprogramacion)
+                    <div class="mt-4 flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-[#009CA9]"></i>
+                            <span class="text-sm text-gray-700 dark:text-gray-300">
+                                <strong>Reprogramación:</strong>
+                                {{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->translatedFormat('d F, Y h:i A') }}
+                            </span>
+                        </div>
+                        @if($j->reprogramacion->aula)
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-door-open text-[#009CA9]"></i>
+                            <span class="text-sm text-gray-700 dark:text-gray-300">
+                                <strong>Aula:</strong> {{ $j->reprogramacion->aula }}
+                            </span>
+                        </div>
+                        @endif
+                        <a href="{{ route('reprogramaciones.edit', $j->reprogramacion->id) }}"
+                           class="inline-flex items-center px-3 py-1 bg-[#009CA9] text-white text-xs font-semibold rounded-md shadow hover:bg-[#007c8b] focus:outline-none focus:ring-2 focus:ring-[#009CA9] focus:ring-offset-2 transition ml-2">
+                            <i class="fas fa-edit mr-1"></i> Editar
+                        </a>
+                    </div>
+                @endif
+
+                @if ($j->estado === 'aceptada' && !$j->reprogramacion)
+                    <div class="mt-4">
+                        <a href="{{ route('reprogramaciones.create', $j->id) }}"
+                           class="inline-flex items-center px-4 py-2 bg-[#009CA9] text-white text-xs font-semibold rounded-md shadow hover:bg-[#007c8b] focus:outline-none focus:ring-2 focus:ring-[#009CA9] focus:ring-offset-2 transition">
+                            <i class="fas fa-calendar-plus mr-2"></i> Agregar reprogramación
+                        </a>
+                    </div>
+                @endif
             </div>
         @empty
             <div class="p-6 text-center">

@@ -33,4 +33,9 @@ class Justificacion extends Model
         return $this->belongsTo(ClaseProfesor::class, 'clase_profesor_id');
     }
 
+    public function reprogramacion()
+    {
+        return $this->hasOne(Reprogramacion::class);
+    }
+
 }

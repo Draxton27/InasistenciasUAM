@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Justificacion;
 use App\Models\Profesor;
+use App\Models\Reprogramacion;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +16,10 @@ class JustificacionController extends Controller
 {
     public function index()
     {
+        // Eliminar reprogramaciones vencidas
+        $now = Carbon::now(config('app.timezone'))->format('Y-m-d H:i:s');
+        Reprogramacion::where('fecha_reprogramada', '<', $now)->delete();
+
         $justificaciones = Auth::user()->justificaciones()->latest()->get();
         return view('justificaciones.index', compact('justificaciones'));
     }
