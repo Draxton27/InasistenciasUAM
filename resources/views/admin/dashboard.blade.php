@@ -181,13 +181,10 @@
                                             Aprobar
                                         </button>
                                     </form>
-                                    <form action="{{ route('admin.justificaciones.rechazar', $j->id) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
-                                            Rechazar
-                                        </button>
-                                    </form>
+                                    <a href="{{ route('admin.justificaciones.show-rechazar', $j->id) }}" 
+                                       class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                                        Rechazar
+                                    </a>
                                 </div>
                             </template>
                             @endif

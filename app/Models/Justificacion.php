@@ -38,4 +38,9 @@ class Justificacion extends Model
         return $this->hasOne(Reprogramacion::class);
     }
 
+    public function rechazo()
+    {
+        return $this->hasOne(Rechazo::class);
+    }
+
 }
