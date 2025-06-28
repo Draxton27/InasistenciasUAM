@@ -1,32 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-8">
-        <h2 class="text-3xl font-extrabold text-[#009CA9] dark:text-[#009CA9] tracking-tight">
+<div class="max-w-5xl mx-auto py-6 px-2 sm:px-4 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-[#009CA9] dark:text-[#009CA9] tracking-tight">
             Mis Justificaciones
         </h2>
         <a href="{{ route('justificaciones.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition">
+           class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition w-full sm:w-auto justify-center">
             <i class="fas fa-plus"></i> Nueva Justificación
         </a>
     </div>
 
     @forelse ($justificaciones as $j)
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-xl p-6 mb-6 transition">
-            <div class="flex justify-between items-start gap-4">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-xl p-4 sm:p-6 mb-6 transition flex flex-col gap-3">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-2 md:gap-4">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white truncate">
                         {{ $j->claseProfesor->clase->name ?? 'Clase eliminada' }}
                         — {{ $j->claseProfesor->profesor->nombre ?? 'Profesor eliminado' }}
                         (Grupo {{ $j->claseProfesor->grupo ?? '-' }})
                     </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">
                         {{ \Carbon\Carbon::parse($j->fecha)->translatedFormat('d F, Y') }} &nbsp;|&nbsp; {{ ucfirst($j->tipo_constancia) }}
                     </p>
                 </div>
-
-                <span class="text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full 
+                <span class="mt-2 md:mt-0 text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full 
                     {{ $j->estado === 'aceptada' ? 'bg-green-100 text-green-800' : 
                        ($j->estado === 'rechazada' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
                     {{ ucfirst($j->estado) }}
@@ -34,25 +33,25 @@
             </div>
 
             @if ($j->archivo)
-                <div class="mt-4">
+                <div class="mt-2 sm:mt-4">
                     <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
-                       class="text-sm text-[#009CA9] dark:text-[#009CA9] hover:underline flex items-center gap-1">
+                       class="text-xs sm:text-sm text-[#009CA9] dark:text-[#009CA9] hover:underline flex items-center gap-1">
                         <i class="fas fa-paperclip"></i> Ver archivo adjunto
                     </a>
                 </div>
             @endif
 
             @if ($j->notas_adicionales)
-                <p class="mt-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p class="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                     {{ $j->notas_adicionales }}
                 </p>
             @endif
 
             @if ($j->reprogramacion)
-                <div class="mt-4 flex items-center gap-4">
+                <div class="mt-2 sm:mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-calendar-alt text-[#009CA9]"></i>
-                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                        <span class="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                             <strong>Reprogramación:</strong>
                             {{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->translatedFormat('d F, Y h:i A') }}
                         </span>
@@ -60,11 +59,42 @@
                     @if($j->reprogramacion->aula)
                     <div class="flex items-center gap-2">
                         <i class="fas fa-door-open text-[#009CA9]"></i>
-                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                        <span class="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                             <strong>Aula:</strong> {{ $j->reprogramacion->aula }}
                         </span>
                     </div>
                     @endif
+                </div>
+            @endif
+
+            @if ($j->rechazo)
+                <div class="mt-2 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <div class="flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
+                        <i class="fas fa-times-circle text-red-500"></i>
+                        <div class="flex-1">
+                            <h4 class="text-xs sm:text-sm font-medium text-red-800 dark:text-red-200 mb-1 sm:mb-2">
+                                Justificación Rechazada
+                            </h4>
+                            <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3">
+                                {{ $j->rechazo->comentario }}
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <form action="{{ route('justificaciones.destroy', $j->id) }}" method="POST" 
+                                      onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta justificación rechazada?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="w-full sm:w-auto px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">
+                                        Eliminar
+                                    </button>
+                                </form>
+                                <a href="{{ route('justificaciones.create') }}" 
+                                   class="w-full sm:w-auto px-3 py-1 text-xs bg-[#009CA9] text-white rounded hover:bg-[#007a85] transition-colors text-center">
+                                    Enviar Nueva
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

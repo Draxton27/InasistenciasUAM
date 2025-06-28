@@ -194,13 +194,13 @@
     <header>
         <div class="logo">Formación con Excelencia Académica y Deportiva</div>
         @if (Route::has('login'))
-            <nav>
+            <nav style="width:100%;display:flex;flex-direction:row;gap:0.75rem;justify-content:center;align-items:center;flex-wrap:wrap;">
                 @auth
-                    <a href="{{ url('/redirect') }}">Panel</a>
+                    <a href="{{ url('/redirect') }}" style="flex:1 1 120px;min-width:120px;max-width:220px;padding:0.8rem 1.5rem;font-size:1.1rem;display:flex;justify-content:center;align-items:center;">Panel</a>
                 @else
-                    <a href="{{ route('login') }}">Iniciar sesión</a>
+                    <a href="{{ route('login') }}" style="flex:1 1 120px;min-width:120px;max-width:220px;padding:0.8rem 1.5rem;font-size:1.1rem;display:flex;justify-content:center;align-items:center;">Iniciar sesión</a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}">Registrarse</a>
+                        <a href="{{ route('register') }}" style="flex:1 1 120px;min-width:120px;max-width:220px;padding:0.8rem 1.5rem;font-size:1.1rem;display:flex;justify-content:center;align-items:center;">Registrarse</a>
                     @endif
                 @endauth
             </nav>

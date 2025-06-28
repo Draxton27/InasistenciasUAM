@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/justificaciones', [JustificacionController::class, 'index'])->name('justificaciones.index');
     Route::get('/justificaciones/create', [JustificacionController::class, 'create'])->name('justificaciones.create');
     Route::post('/justificaciones', [JustificacionController::class, 'store'])->name('justificaciones.store');
+    Route::delete('/justificaciones/{justificacion}', [JustificacionController::class, 'destroy'])->name('justificaciones.destroy');
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
@@ -63,6 +64,7 @@ Route::get('/api/profesor/{id}/clases', function ($id) {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::patch('admin/justificaciones/{id}/aprobar', [AdminController::class, 'aprobar'])->name('admin.justificaciones.aprobar');
+    Route::get('admin/justificaciones/{id}/rechazar', [AdminController::class, 'showRechazar'])->name('admin.justificaciones.show-rechazar');
     Route::patch('admin/justificaciones/{id}/rechazar', [AdminController::class, 'rechazar'])->name('admin.justificaciones.rechazar');
 });
 
