@@ -14,15 +14,20 @@ use Illuminate\Support\Facades\Storage;
 
 class JustificacionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Eliminar reprogramaciones vencidas
-        $now = Carbon::now(config('app.timezone'))->format('Y-m-d H:i:s');
-        Reprogramacion::where('fecha_reprogramada', '<', $now)->delete();
-
-        $justificaciones = Auth::user()->justificaciones()->latest()->get();
-        return view('justificaciones.index', compact('justificaciones'));
+         $now = Carbon::now(config('app.timezone'))->format('Y-m-d H:i:s');
+         Reprogramacion::where('fecha_reprogramada', '<', $now)->delete();
+         $query = Auth::user()->justificaciones()->latest();
+        
+         //filtro
+         if ($request->filled('estado')) {
+             $query->where('estado', $request->estado);
+         }
+         $justificaciones = $query->get();
+         return view('justificaciones.index', compact('justificaciones'));
     }
+
 
     public function create()
     {
