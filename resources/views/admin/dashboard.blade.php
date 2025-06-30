@@ -13,71 +13,72 @@
     </div>
 
     <!-- Tarjetas de Resumen -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Justificaciones Pendientes -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
-                        <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                        Justificaciones Pendientes
-                    </h3>
-                    <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
-                        {{ $justificaciones->where('estado', 'pendiente')->count() }}
-                    </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Justificaciones Pendientes -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+                    <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
                 </div>
             </div>
-        </div>
-
-        <!-- Justificaciones Aceptadas -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                        <i class="fas fa-check text-green-600 dark:text-green-400 text-xl"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                        Justificaciones Aceptadas
-                    </h3>
-                    <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
-                        {{ $justificaciones->where('estado', 'aceptada')->count() }}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Justificaciones Rechazadas -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
-                        <i class="fas fa-times text-red-600 dark:text-red-400 text-xl"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                        Justificaciones Rechazadas
-                    </h3>
-                    <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
-                        {{ $justificaciones->where('estado', 'rechazada')->count() }}
-                    </p>
-                </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                    Justificaciones Pendientes
+                </h3>
+                <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+                    {{ $conteo['pendiente'] ?? 0 }}
+                </p>
             </div>
         </div>
     </div>
+
+    <!-- Justificaciones Aceptadas -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                    <i class="fas fa-check text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+            </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                    Justificaciones Aceptadas
+                </h3>
+                <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+                    {{ $conteo['aceptada'] ?? 0 }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Justificaciones Rechazadas -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
+                    <i class="fas fa-times text-red-600 dark:text-red-400 text-xl"></i>
+                </div>
+            </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                    Justificaciones Rechazadas
+                </h3>
+                <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+                    {{ $conteo['rechazada'] ?? 0 }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <!-- Lista de Justificaciones -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                 Justificaciones Recientes
-            </h3>
+            </h3> 
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -93,8 +94,18 @@
                             Fecha
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Estado
+                            <form method="GET" action="{{ url()->current() }}">
+                                <label for="estado" class="sr-only">Filtrar estado</label>
+                                <select name="estado" id="estado" onchange="this.form.submit()"
+                                class="w-full text-xs uppercase bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 focus:outline-none focus:ring-[#009CA9] focus:border-[#009CA9] text-gray-700 dark:text-white">
+                                <option value="">Todos</option>
+                                <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                                <option value="aceptada" {{ request('estado') == 'aceptada' ? 'selected' : '' }}>Aceptada</option>
+                                <option value="rechazada" {{ request('estado') == 'rechazada' ? 'selected' : '' }}>Rechazada</option>
+                            </select>
+                            </form>
                         </th>
+
                         <th scope="col" class="relative px-6 py-3">
                             <span class="sr-only">Acciones</span>
                         </th>

@@ -2,14 +2,32 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto py-6 px-2 sm:px-4 lg:px-8">
+    <!-- Botones de acción como crear y filtrar -->
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
         <h2 class="text-2xl sm:text-3xl font-extrabold text-[#009CA9] dark:text-[#009CA9] tracking-tight">
             Mis Justificaciones
         </h2>
+        
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+            <!-- Selector como filtro -->
+        <form method="GET" action="{{ route('justificaciones.index') }}" class="flex items-center gap-2">
+        <label for="estado" class="text-sm text-gray-700 dark:text-gray-300">Filtrar por estado:</label>
+        <select name="estado" id="estado" onchange="this.form.submit()"
+        class="block sm:w-auto mt-1 sm:mt-0 px-3 py-2 pr-10 bg-white border border-gray-300 dark:border-gray-600 
+        rounded-md shadow-sm focus:outline-none focus:ring-[#009CA9] focus:border-[#009CA9] text-sm dark:bg-gray-800 dark:text-white">
+            <option value="">Todos</option>
+            <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+            <option value="aceptada" {{ request('estado') == 'aceptada' ? 'selected' : '' }}>Aceptada</option>
+            <option value="rechazada" {{ request('estado') == 'rechazada' ? 'selected' : '' }}>Rechazada</option>
+        </select>
+        </form>
+
+        <!-- Boton de nueva justificación -->
         <a href="{{ route('justificaciones.create') }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition w-full sm:w-auto justify-center">
             <i class="fas fa-plus"></i> Nueva Justificación
         </a>
+        </div>
     </div>
 
     @forelse ($justificaciones as $j)

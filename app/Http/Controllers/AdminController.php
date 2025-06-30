@@ -8,10 +8,20 @@ use App\Models\Rechazo;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $justificaciones = Justificacion::with('user')->latest()->get();
-        return view('admin.dashboard', compact('justificaciones'));
+        $conteo = [
+        'pendiente' => Justificacion::where('estado', 'pendiente')->count(),
+        'aceptada'  => Justificacion::where('estado', 'aceptada')->count(),
+        'rechazada' => Justificacion::where('estado', 'rechazada')->count(),
+        'total'     => Justificacion::count(),
+    ];
+    
+        $justificaciones = Justificacion::with(['user', 'claseProfesor.clase'])
+        ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->estado))
+        ->latest()
+        ->get();
+        return view('admin.dashboard', compact('justificaciones', 'conteo'));
     }
 
     public function aprobar($id)
