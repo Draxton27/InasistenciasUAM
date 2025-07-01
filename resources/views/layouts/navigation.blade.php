@@ -41,7 +41,7 @@
                         </x-nav-link>
                         <x-nav-link :href="route('clases.index')" :active="request()->routeIs('clases.index')">
                             {{ __('Clases') }}
-                        </x-nav-link>
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -70,7 +70,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Salir') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -91,24 +91,29 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <<div class="pt-2 pb-3 space-y-1">
-    @php $role = Auth::user()->role; @endphp
+        <div class="pt-2 pb-3 space-y-1">
+            @php $role = Auth::user()->role; @endphp
 
-    @if ($role === 'admin')
-        <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-            {{ __('Admin') }}
-        </x-responsive-nav-link>
-    @elseif ($role === 'profesor')
-        <x-responsive-nav-link :href="route('profesor.dashboard')" :active="request()->routeIs('profesor.*')">
-            {{ __('Justificaciones') }}
-        </x-responsive-nav-link>
-    @else
-        <x-responsive-nav-link :href="route('justificaciones.index')" :active="request()->routeIs('justificaciones.*')">
-            {{ __('Justificaciones') }}
-        </x-responsive-nav-link>
-    @endif
-</div>
-
+            @if ($role === 'admin')
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Admin') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profesores.index')" :active="request()->routeIs('profesores.*')">
+                    {{ __('Profesores') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('clases.index')" :active="request()->routeIs('clases.index')">
+                    {{ __('Clases') }}
+                </x-responsive-nav-link>
+            @elseif ($role === 'profesor')
+                <x-responsive-nav-link :href="route('profesor.dashboard')" :active="request()->routeIs('profesor.*')">
+                    {{ __('Justificaciones') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('justificaciones.index')" :active="request()->routeIs('justificaciones.*')">
+                    {{ __('Justificaciones') }}
+                </x-responsive-nav-link>
+            @endif
+        </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -129,7 +134,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('Salir') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

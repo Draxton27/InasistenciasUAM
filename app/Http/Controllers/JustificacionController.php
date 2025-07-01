@@ -97,4 +97,19 @@ public function destroy(Justificacion $justificacion)
     return redirect()->route('justificaciones.index')->with('success', 'Justificación eliminada correctamente.');
 }
 
+public function destroyAndCreate(Justificacion $justificacion)
+{
+    if ($justificacion->user_id !== Auth::id()) {
+        abort(403, 'No tienes permiso para eliminar esta justificación.');
+    }
+
+    if ($justificacion->archivo && \Storage::disk('public')->exists($justificacion->archivo)) {
+        \Storage::disk('public')->delete($justificacion->archivo);
+    }
+
+    $justificacion->delete();
+
+    return redirect()->route('justificaciones.create');
+}
+
 }
