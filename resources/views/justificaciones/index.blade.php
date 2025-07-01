@@ -106,10 +106,13 @@
                                         Eliminar
                                     </button>
                                 </form>
-                                <a href="{{ route('justificaciones.create') }}" 
-                                   class="w-full sm:w-auto px-3 py-1 text-xs bg-[#009CA9] text-white rounded hover:bg-[#007a85] transition-colors text-center">
-                                    Enviar Nueva
-                                </a>
+                                <form action="{{ route('justificaciones.destroy-and-create', $j->id) }}" method="POST" class="w-full sm:w-auto">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full sm:w-auto px-3 py-1 text-xs bg-[#009CA9] text-white rounded hover:bg-[#007a85] transition-colors text-center">
+                                        Enviar Nueva
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
