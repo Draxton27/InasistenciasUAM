@@ -35,6 +35,23 @@
                     focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
                     dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
             </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contraseña</label>
+                <input type="password" name="password" id="password" 
+                    class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                    focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                    dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmar contraseña</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" 
+                    class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
+                    focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
+                    dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
+            </div>
+
             <div class="mb-4 col-span-2">
                 <label for="foto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto</label>
                 <input type="file" name="foto" id="foto"
