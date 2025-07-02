@@ -31,11 +31,14 @@ class ProfesorController extends Controller
     $validator = Validator::make($request->all(), [
     'nombre' => 'required|string|max:255',
     'email' => 'required|email|unique:users,email',
+    'password' => 'required|string|min:8|confirmed',
     'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     'clase_grupo.*.grupo' => 'nullable|integer|min:1',
 ], [
     'clase_grupo.*.grupo.integer' => 'El grupo debe ser un número válido.',
     'clase_grupo.*.grupo.min' => 'El grupo debe ser mayor a 0.',
+    'password.confirmed' => 'La confirmación de contraseña no coincide.',
+    'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
 ]);
 
     // Validación personalizada: clase + grupo no deben repetirse
@@ -82,7 +85,7 @@ class ProfesorController extends Controller
     $user = User::create([
         'name' => $data['nombre'],
         'email' => $data['email'],
-        'password' => Hash::make('password123'),
+        'password' => Hash::make($request->password),
         'role' => 'profesor',
     ]);
 
