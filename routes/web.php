@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/justificaciones', [JustificacionController::class, 'store'])->name('justificaciones.store');
     Route::delete('/justificaciones/{justificacion}', [JustificacionController::class, 'destroy'])->name('justificaciones.destroy');
     Route::post('/justificaciones/{justificacion}/destroy-and-create', [JustificacionController::class, 'destroyAndCreate'])->name('justificaciones.destroy-and-create');
+    Route::resource('justificaciones', App\Http\Controllers\JustificacionController::class);
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {

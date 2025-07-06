@@ -16,8 +16,6 @@ class JustificacionController extends Controller
 {
     public function index(Request $request)
     {
-         $now = Carbon::now(config('app.timezone'))->format('Y-m-d H:i:s');
-         Reprogramacion::where('fecha_reprogramada', '<', $now)->delete();
          $query = Auth::user()->justificaciones()->latest();
         
          //filtro
@@ -110,6 +108,55 @@ public function destroyAndCreate(Justificacion $justificacion)
     $justificacion->delete();
 
     return redirect()->route('justificaciones.create');
+}
+
+public function edit($id)
+{
+    $justificacion = Auth::user()->justificaciones()->findOrFail($id);
+    $profesores = \App\Models\Profesor::with('clases')->get();
+    $clases = \App\Models\ClaseProfesor::with('clase')->get();
+    return view('justificaciones.edit', compact('justificacion', 'profesores', 'clases'));
+}
+
+public function update(Request $request, $id)
+{
+    $justificacion = Auth::user()->justificaciones()->findOrFail($id);
+    $request->validate([
+        'justificaciones.0.profesor_id' => 'required|exists:profesores,id',
+        'justificaciones.0.clase_profesor_id' => 'required|exists:clase_profesor,id',
+        'justificaciones.0.fecha' => 'required|date',
+        'tipo_constancia' => 'required|in:trabajo,enfermedad,otro',
+        'notas_adicionales' => 'nullable|string',
+        'archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
+
+    // Manejo de archivo
+    if ($request->hasFile('archivo')) {
+        $file = $request->file('archivo');
+        if ($file->isValid()) {
+            // Eliminar archivo anterior si existe
+            if ($justificacion->archivo && \Storage::disk('public')->exists($justificacion->archivo)) {
+                \Storage::disk('public')->delete($justificacion->archivo);
+            }
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $destination = storage_path('app/public/justificaciones');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $justificacion->archivo = 'justificaciones/' . $filename;
+        } else {
+            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
+        }
+    }
+
+    $justificacion->clase_profesor_id = $request->input('justificaciones.0.clase_profesor_id');
+    $justificacion->fecha = $request->input('justificaciones.0.fecha');
+    $justificacion->tipo_constancia = $request->input('tipo_constancia');
+    $justificacion->notas_adicionales = $request->input('notas_adicionales');
+    $justificacion->save();
+
+    return redirect()->route('justificaciones.index')->with('success', 'Justificación actualizada correctamente.');
 }
 
 }
