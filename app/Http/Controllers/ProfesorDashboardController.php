@@ -12,16 +12,13 @@ use Carbon\Carbon;
 class ProfesorDashboardController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $now = Carbon::now(config('app.timezone'))->format('Y-m-d H:i:s');
-        Reprogramacion::where('fecha_reprogramada', '<', $now)->delete();
-
         $profesor = \App\Models\Profesor::where('user_id', Auth::id())->firstOrFail();
 
         $justificaciones = Justificacion::whereHas('claseProfesor', function ($query) use ($profesor) {
             $query->where('profesor_id', $profesor->id);
-        })->latest()->get();
+        })->where('estado', 'aceptada')->latest()->get();
 
         return view('profesor.dashboard', compact('justificaciones'));
     }

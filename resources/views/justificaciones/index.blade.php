@@ -70,8 +70,11 @@
                     <div class="flex items-center gap-2">
                         <i class="fas fa-calendar-alt text-[#009CA9]"></i>
                         <span class="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                            <strong>Reprogramación:</strong>
+                            <strong>{{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->isPast() ? 'Reprogramado' : 'Reprogramación' }}:</strong>
                             {{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->translatedFormat('d F, Y h:i A') }}
+                            @if(\Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->isPast())
+                                <i class="fas fa-check-circle text-green-500 ml-1" title="Ya ocurrió"></i>
+                            @endif
                         </span>
                     </div>
                     @if($j->reprogramacion->aula)
@@ -96,26 +99,26 @@
                             <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3">
                                 {{ $j->rechazo->comentario }}
                             </p>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <form action="{{ route('justificaciones.destroy', $j->id) }}" method="POST" 
-                                      onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta justificación rechazada?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="w-full sm:w-auto px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">
-                                        Eliminar
-                                    </button>
-                                </form>
-                                <form action="{{ route('justificaciones.destroy-and-create', $j->id) }}" method="POST" class="w-full sm:w-auto">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full sm:w-auto px-3 py-1 text-xs bg-[#009CA9] text-white rounded hover:bg-[#007a85] transition-colors text-center">
-                                        Enviar Nueva
-                                    </button>
-                                </form>
-                            </div>
                         </div>
                     </div>
+                </div>
+            @endif
+
+            @if ($j->estado === 'pendiente')
+                <div class="flex flex-col sm:flex-row gap-2 mt-2">
+                    <a href="{{ route('justificaciones.edit', $j->id) }}"
+                       class="w-full sm:w-auto px-3 py-1 text-xs bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200 transition-colors text-center font-semibold">
+                        <i class="fas fa-edit mr-1"></i> Editar
+                    </a>
+                    <form action="{{ route('justificaciones.destroy', $j->id) }}" method="POST" 
+                          onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta justificación?')" class="w-full sm:w-auto">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" 
+                                class="w-full sm:w-auto px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors text-center">
+                            <i class="fas fa-trash mr-1"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             @endif
         </div>

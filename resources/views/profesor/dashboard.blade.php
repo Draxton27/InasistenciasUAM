@@ -65,8 +65,11 @@
                         <div class="flex items-center gap-2">
                             <i class="fas fa-calendar-alt text-[#009CA9]"></i>
                             <span class="text-sm text-gray-700 dark:text-gray-300">
-                                <strong>Reprogramación:</strong>
+                                <strong>{{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->isPast() ? 'Reprogramado' : 'Reprogramación' }}:</strong>
                                 {{ \Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->translatedFormat('d F, Y h:i A') }}
+                                @if(\Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->isPast())
+                                    <i class="fas fa-check-circle text-green-500 ml-1" title="Ya ocurrió"></i>
+                                @endif
                             </span>
                         </div>
                         @if($j->reprogramacion->aula)
@@ -77,10 +80,12 @@
                             </span>
                         </div>
                         @endif
+                        @unless(\Carbon\Carbon::parse($j->reprogramacion->fecha_reprogramada)->isPast())
                         <a href="{{ route('reprogramaciones.edit', $j->reprogramacion->id) }}"
                            class="inline-flex items-center justify-center px-3 py-1 bg-[#009CA9] text-white text-xs font-semibold rounded-md shadow hover:bg-[#007c8b] focus:outline-none focus:ring-2 focus:ring-[#009CA9] focus:ring-offset-2 transition sm:ml-2 w-full sm:w-auto">
                             <i class="fas fa-edit mr-1"></i> Editar
                         </a>
+                        @endunless
                     </div>
                 @endif
 
