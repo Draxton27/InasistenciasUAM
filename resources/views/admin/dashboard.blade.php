@@ -75,10 +75,14 @@
 
     <!-- Lista de Justificaciones -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                Justificaciones Recientes
+            Justificaciones Recientes
             </h3> 
+                <a href="{{ route('admin.reporte.justificaciones') }}"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-xl shadow-md transition text-center">
+                Generar Reporte
+                </a>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -92,6 +96,9 @@
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Fecha
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Tipo
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             <form method="GET" action="{{ url()->current() }}">
@@ -142,6 +149,11 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white">
                                     {{ \Carbon\Carbon::parse($j->fecha)->translatedFormat('d F, Y') }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">
+                                    {{ $j->tipo_constancia}}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">

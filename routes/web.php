@@ -11,6 +11,7 @@ use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\Auth\LoginRedirectController;
 use App\Http\Controllers\ReprogramacionController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('admin/justificaciones/{id}/aprobar', [AdminController::class, 'aprobar'])->name('admin.justificaciones.aprobar');
     Route::get('admin/justificaciones/{id}/rechazar', [AdminController::class, 'showRechazar'])->name('admin.justificaciones.show-rechazar');
     Route::patch('admin/justificaciones/{id}/rechazar', [AdminController::class, 'rechazar'])->name('admin.justificaciones.rechazar');
+    Route::get('admin/reporte/justificaciones', [ReportController::class, 'generarReporte'])->name('admin.reporte.justificaciones');
 });
 
 Route::middleware(['auth', 'profesor'])->group(function () {
