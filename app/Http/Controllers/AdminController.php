@@ -21,7 +21,8 @@ class AdminController extends Controller
         ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->estado))
         ->latest()
         ->get();
-        return view('admin.dashboard', compact('justificaciones', 'conteo'));
+        $clases = \App\Models\Clase::all();
+        return view('admin.dashboard', compact('justificaciones', 'conteo', 'clases'));
     }
 
     public function aprobar($id)

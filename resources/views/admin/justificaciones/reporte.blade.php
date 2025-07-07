@@ -12,6 +12,20 @@
 <body>
     <h1>Reporte General de Justificaciones</h1>
 
+    @if(!empty($filtros['fecha_inicio']) && !empty($filtros['fecha_fin']))
+        <p style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
+            <strong>Del {{ \Carbon\Carbon::parse($filtros['fecha_inicio'])->format('d/m/Y') }}
+            al {{ \Carbon\Carbon::parse($filtros['fecha_fin'])->format('d/m/Y') }}</strong>
+        </p>
+    @endif
+
+    @if(!empty($claseNombre))
+    <p style="text-align: center; margin-bottom: 10px;">
+        <strong>Clase:</strong> {{ $claseNombre }}
+    </p>
+    @endif
+
+
     <p><strong>Total Justificaciones:</strong> {{ $total }}</p>
     <p><strong>Aprobadas:</strong> {{ $aprobadas }} ({{ $porcentajeAprobadas }}%)</p>
     <p><strong>Rechazadas:</strong> {{ $rechazadas }} ({{ $porcentajeRechazadas }}%)</p>

@@ -75,15 +75,31 @@
 
     <!-- Lista de Justificaciones -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-            Justificaciones Recientes
-            </h3> 
-                <a href="{{ route('admin.reporte.justificaciones') }}"
-                class="inline-flex items-center gap-2 px-6 py-3 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-xl shadow-md transition text-center">
-                Generar Reporte
-                </a>
-        </div>
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Justificaciones Recientes
+    </h3> 
+
+    <form method="GET" action="{{ route('admin.reporte.justificaciones') }}" class="flex flex-wrap items-center gap-2">
+        <select name="clase_id" class="rounded-xl border-gray-300 text-sm">
+            <option value="">Todas las clases</option>
+            @foreach($clases as $clase)
+                <option value="{{ $clase->id }}" {{ request('clase_id') == $clase->id ? 'selected' : '' }}>
+                {{ $clase->name }}
+                </option>
+            @endforeach
+        </select>
+
+
+        <input type="date" name="fecha_inicio" value="{{ request('fecha_inicio') }}" class="rounded-xl border-gray-300 text-sm">
+        <input type="date" name="fecha_fin" value="{{ request('fecha_fin') }}" class="rounded-xl border-gray-300 text-sm">
+
+        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-xl shadow transition">
+            Generar Reporte
+        </button>
+    </form>
+</div>
+
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
