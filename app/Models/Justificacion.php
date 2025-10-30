@@ -23,6 +23,7 @@ class Justificacion extends Model
         'estado',
     ];
 
+    //relaciones con otros modelos
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -43,4 +44,22 @@ class Justificacion extends Model
         return $this->hasOne(Rechazo::class);
     }
 
+    //Gestión de estados
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+        $this->save();
+    }
+
+    //Retorna la clase de estado correspondiente según el valor actual. 
+    public function state()
+    {
+        return match ($this->estado) {
+            'registrada' => new \App\States\Justificacion\RegistradaState(),
+            'en_revision' => new \App\States\Justificacion\EnRevisionState(),
+            'aceptada' => new \App\States\Justificacion\AceptadaState(),
+            'rechazada' => new \App\States\Justificacion\RechazadaState(),
+            default => new \App\States\Justificacion\RegistradaState(),
+        };
+    }
 }
