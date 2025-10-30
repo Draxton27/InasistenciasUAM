@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Justificacion;
 use App\Models\Profesor;
+use App\Models\Rechazo;
+use App\States\Justificacion\RechazadaState;
 use App\Models\Reprogramacion;
 use Carbon\Carbon;
 
@@ -14,6 +16,28 @@ use Illuminate\Support\Facades\Storage;
 
 class JustificacionController extends Controller
 {
+    public function rechazar(Request $request, Justificacion $justificacion)
+{
+    $request->validate([
+        'comentario' => 'required|string|max:5000',
+    ]);
+
+    // Cambiar el estado
+    $justificacion->estado = 'rechazada';
+    $justificacion->save();
+
+    // Crear el registro en la tabla rechazos
+    Rechazo::create([
+        'justificacion_id' => $justificacion->id,
+        'comentario' => $request->comentario,
+    ]);
+
+    // Ejecutar la lógica del estado (si usas el patrón State)
+    (new RechazadaState())->onEnter($justificacion, $request->comentario);
+
+    return redirect()->route('admin.dashboard')->with('success', 'Justificación rechazada correctamente.');
+}
+
     public function index(Request $request)
     {
          $query = Auth::user()->justificaciones()->latest();

@@ -83,7 +83,7 @@
                         <select name="profesor_grupo[0][profesor_id]"
                                 class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600
                                        focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9]
-                                       dark:bg-gray-700 dark:text-white text-sm" required>
+                                       dark:bg-gray-700 dark:text-white text-sm">
                             <option value="">Selecciona un profesor</option>
                             @foreach ($profesores as $profesor)
                                 <option value="{{ $profesor->id }}">{{ $profesor->nombre }}</option>
@@ -140,7 +140,7 @@
         let selectHTML = `<select name="profesor_grupo[${profIndex}][profesor_id]"
             class="w-1/2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600
                    focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9]
-                   dark:bg-gray-700 dark:text-white text-sm" required>
+                   dark:bg-gray-700 dark:text-white text-sm" >
             <option value="">Selecciona un profesor</option>`;
         profesores.forEach(p => {
             selectHTML += `<option value="${p.id}">${p.nombre}</option>`;
