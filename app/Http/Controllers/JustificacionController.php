@@ -16,27 +16,32 @@ use Illuminate\Support\Facades\Storage;
 
 class JustificacionController extends Controller
 {
-    public function rechazar(Request $request, Justificacion $justificacion)
+public function rechazar(Request $request, Justificacion $justificacion)
 {
     $request->validate([
-        'comentario' => 'required|string|max:5000',
+        'comentario' => 'required|string|max:500',
     ]);
 
-    // Cambiar el estado
-    $justificacion->estado = 'rechazada';
-    $justificacion->save();
-
-    // Crear el registro en la tabla rechazos
-    Rechazo::create([
-        'justificacion_id' => $justificacion->id,
-        'comentario' => $request->comentario,
+    // Usamos el state del modelo
+    $justificacion->rechazar([
+        'comentario' => $request->comentario
     ]);
 
-    // Ejecutar la lógica del estado (si usas el patrón State)
-    (new RechazadaState())->onEnter($justificacion, $request->comentario);
-
-    return redirect()->route('admin.dashboard')->with('success', 'Justificación rechazada correctamente.');
+    return redirect()->route('admin.dashboard')
+                     ->with('success', 'Justificación rechazada correctamente.');
 }
+
+public function aprobar(Justificacion $justificacion)
+{
+    try {
+        $justificacion->aprobar();
+        return redirect()->route('admin.dashboard')
+                         ->with('success', 'Justificación aprobada correctamente.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+    }
+}
+
 
     public function index(Request $request)
     {

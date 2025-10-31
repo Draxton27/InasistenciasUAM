@@ -16,13 +16,13 @@
         </div>
     @endif
 
-    <form action="{{ route('profesores.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('profesores.store') }}" method="POST" enctype="multipart/form-data" data-mediator="true">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
                 <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre completo</label>
-                <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}"
+                <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}" data-mediator="required"
                     class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
                     focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
                     dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
@@ -30,7 +30,7 @@
 
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Correo electrónico</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                <input type="email" name="email" id="email" value="{{ old('email') }}" data-mediator="required"
                     class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
                     focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
                     dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
@@ -38,7 +38,7 @@
 
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contraseña</label>
-                <input type="password" name="password" id="password" 
+                <input type="password" name="password" id="password"  data-mediator="required"
                     class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
                     focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
                     dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
@@ -46,7 +46,7 @@
 
             <div>
                 <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmar contraseña</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" 
+                <input type="password" name="password_confirmation" id="password_confirmation" data-mediator="required"
                     class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 
                     focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] 
                     dark:bg-gray-700 dark:text-white shadow-sm sm:text-sm" required>
@@ -107,7 +107,7 @@
     </form>
 </div>
 
-<script>
+<script src="{{ asset('js/form-mediator.js') }}">
     let index = 1;
 
     function agregarGrupoClase() {
@@ -146,5 +146,6 @@
 
         index++;
     }
+
 </script>
 @endsection

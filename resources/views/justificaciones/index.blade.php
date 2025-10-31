@@ -2,36 +2,38 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto py-6 px-2 sm:px-4 lg:px-8">
-    <!-- Botones de acción como crear y filtrar -->
+    <!-- Header y filtros -->
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
         <h2 class="text-2xl sm:text-3xl font-extrabold text-[#009CA9] dark:text-[#009CA9] tracking-tight">
             Mis Justificaciones
         </h2>
-        
-        <div class="flex flex-col sm:flex-row items-center gap-3">
-            <!-- Selector como filtro -->
-        <form method="GET" action="{{ route('justificaciones.index') }}" class="flex items-center gap-2">
-        <label for="estado" class="text-sm text-gray-700 dark:text-gray-300">Filtrar por estado:</label>
-        <select name="estado" id="estado" onchange="this.form.submit()"
-        class="block sm:w-auto mt-1 sm:mt-0 px-3 py-2 pr-10 bg-white border border-gray-300 dark:border-gray-600 
-        rounded-md shadow-sm focus:outline-none focus:ring-[#009CA9] focus:border-[#009CA9] text-sm dark:bg-gray-800 dark:text-white">
-            <option value="">Todos</option>
-            <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-            <option value="aceptada" {{ request('estado') == 'aceptada' ? 'selected' : '' }}>Aceptada</option>
-            <option value="rechazada" {{ request('estado') == 'rechazada' ? 'selected' : '' }}>Rechazada</option>
-        </select>
-        </form>
 
-        <!-- Boton de nueva justificación -->
-        <a href="{{ route('justificaciones.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition w-full sm:w-auto justify-center">
-            <i class="fas fa-plus"></i> Nueva Justificación
-        </a>
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+            <!-- Filtro por estado -->
+            <form method="GET" action="{{ route('justificaciones.index') }}" class="flex items-center gap-2">
+                <label for="estado" class="text-sm text-gray-700 dark:text-gray-300">Filtrar por estado:</label>
+                <select name="estado" id="estado" onchange="this.form.submit()"
+                    class="block sm:w-auto mt-1 sm:mt-0 px-3 py-2 pr-10 bg-white border border-gray-300 dark:border-gray-600
+                    rounded-md shadow-sm focus:outline-none focus:ring-[#009CA9] focus:border-[#009CA9] text-sm dark:bg-gray-800 dark:text-white">
+                    <option value="">Todos</option>
+                    <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="aceptada" {{ request('estado') == 'aceptada' ? 'selected' : '' }}>Aceptada</option>
+                    <option value="rechazada" {{ request('estado') == 'rechazada' ? 'selected' : '' }}>Rechazada</option>
+                </select>
+            </form>
+
+            <!-- Botón de nueva justificación -->
+            <a href="{{ route('justificaciones.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-[#009CA9] hover:bg-[#007c8b] text-white text-sm font-medium rounded-lg shadow-md transition w-full sm:w-auto justify-center">
+                <i class="fas fa-plus"></i> Nueva Justificación
+            </a>
         </div>
     </div>
 
     @forelse ($justificaciones as $j)
         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-xl p-4 sm:p-6 mb-6 transition flex flex-col gap-3">
+            
+            <!-- Encabezado con clase y profesor -->
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-2 md:gap-4">
                 <div class="flex-1 min-w-0">
                     <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white truncate">
@@ -43,13 +45,13 @@
                         {{ \Carbon\Carbon::parse($j->fecha)->translatedFormat('d F, Y') }} &nbsp;|&nbsp; {{ ucfirst($j->tipo_constancia) }}
                     </p>
                 </div>
-                <span class="mt-2 md:mt-0 text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full 
-                    {{ $j->estado === 'aceptada' ? 'bg-green-100 text-green-800' : 
-                       ($j->estado === 'rechazada' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                    {{ ucfirst($j->estado) }}
+                <!-- Estado con State -->
+                <span class="{{ $j->state()->color() }}">
+                    {{ $j->state()->label() }}
                 </span>
             </div>
 
+            <!-- Archivo adjunto -->
             @if ($j->archivo)
                 <div class="mt-2 sm:mt-4">
                     <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
@@ -59,12 +61,14 @@
                 </div>
             @endif
 
+            <!-- Notas adicionales -->
             @if ($j->notas_adicionales)
                 <p class="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                     {{ $j->notas_adicionales }}
                 </p>
             @endif
 
+            <!-- Reprogramación -->
             @if ($j->reprogramacion)
                 <div class="mt-2 sm:mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                     <div class="flex items-center gap-2">
@@ -88,7 +92,8 @@
                 </div>
             @endif
 
-            @if ($j->rechazo)
+            <!-- Rechazo -->
+            @if ($j->rechazo && $j->rechazo->isNotEmpty())
                 <div class="mt-2 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                     <div class="flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
                         <i class="fas fa-times-circle text-red-500"></i>
@@ -97,13 +102,14 @@
                                 Justificación Rechazada
                             </h4>
                             <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3">
-                                {{ $j->rechazo->comentario }}
+                                 {{ $j->rechazo->first()->comentario }}
                             </p>
                         </div>
                     </div>
                 </div>
             @endif
 
+            <!-- Acciones -->
             @if ($j->estado === 'pendiente')
                 <div class="flex flex-col sm:flex-row gap-2 mt-2">
                     <a href="{{ route('justificaciones.edit', $j->id) }}"

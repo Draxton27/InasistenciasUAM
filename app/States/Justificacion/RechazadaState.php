@@ -3,23 +3,20 @@
 namespace App\States\Justificacion;
 
 use App\Models\Justificacion;
-use App\Models\Rechazo;
 
 class RechazadaState extends BaseState
 {
     public static string $name = 'rechazada';
 
-    public function onEnter(Justificacion $justificacion, ?string $comentario = null): void
+    public function onEnter(Justificacion $justificacion, ?array $data = null): void
     {
-        // Cambia el estado del modelo
-        $justificacion->estado = self::$name;
-        $justificacion->save();
+        // Cambiar estado en la base
+        parent::onEnter($justificacion, $data);
 
-        // Guarda el comentario si se proporcionó
-        if ($comentario) {
-            Rechazo::create([
-                'justificacion_id' => $justificacion->id,
-                'comentario' => $comentario,
+        // Guardar comentario solo si se proporciona y no está vacío
+        if (!empty($data['comentario'] ?? null)) {
+            $justificacion->rechazo()->create([
+                'comentario' => $data['comentario'],
             ]);
         }
     }
