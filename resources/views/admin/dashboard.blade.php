@@ -190,7 +190,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-normal">
                                 <div class="flex gap-2 justify-end items-center" x-data="{ editando: false }">
                                     @if ($j->archivo)
-                                    <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
+                                    <a href="{{ route('justificaciones.file', $j->id) }}" target="_blank"
                                     class="inline-flex items-center gap-1 px-2 py-1 text-xs text-[#009CA9] 
                                     hover:text-[#007a85] dark:text-[#009CA9] dark:hover:text-[#007a85] rounded-md 
                                     hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Ver archivo adjunto">
@@ -213,14 +213,14 @@
                             @if ($j->estado === 'pendiente' || in_array($j->estado, ['aceptada', 'rechazada']))
                             <template x-if="editando || '{{ $j->estado }}' === 'pendiente'">
                                 <div class="flex gap-2">
-                                    <form action="{{ route('admin.justificaciones.aprobar', $j->id) }}" method="POST">
+                                        <form action="{{ route('admin.justificaciones.approve', $j->id) }}" method="POST" class="js-confirm" data-confirm="¿Aprobar esta justificación?" data-confirm-text="Sí, aprobar" data-cancel-text="Cancelar">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700">
                                             Aprobar
                                         </button>
                                     </form>
-                                    <a href="{{ route('admin.justificaciones.show-rechazar', $j->id) }}" 
+                                    <a href="{{ route('admin.justificaciones.show-reject', $j->id) }}" 
                                        class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
                                         Rechazar
                                     </a>

@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/justificaciones', [JustificacionController::class, 'store'])->name('justificaciones.store');
     Route::delete('/justificaciones/{justificacion}', [JustificacionController::class, 'destroy'])->name('justificaciones.destroy');
     Route::post('/justificaciones/{justificacion}/destroy-and-create', [JustificacionController::class, 'destroyAndCreate'])->name('justificaciones.destroy-and-create');
+    Route::get('/justificaciones/{justificacion}/archivo', [JustificacionController::class, 'file'])->name('justificaciones.file');
     Route::resource('justificaciones', App\Http\Controllers\JustificacionController::class);
 });
 
@@ -66,9 +67,9 @@ Route::get('/api/profesor/{id}/clases', function ($id) {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::patch('admin/justificaciones/{id}/aprobar', [AdminController::class, 'aprobar'])->name('admin.justificaciones.aprobar');
-    Route::get('admin/justificaciones/{id}/rechazar', [AdminController::class, 'showRechazar'])->name('admin.justificaciones.show-rechazar');
-    Route::patch('admin/justificaciones/{id}/rechazar', [AdminController::class, 'rechazar'])->name('admin.justificaciones.rechazar');
+    Route::patch('admin/justificaciones/{id}/aprobar', [AdminController::class, 'approve'])->name('admin.justificaciones.approve');
+    Route::get('admin/justificaciones/{id}/rechazar', [AdminController::class, 'showReject'])->name('admin.justificaciones.show-reject');
+    Route::patch('admin/justificaciones/{id}/rechazar', [AdminController::class, 'reject'])->name('admin.justificaciones.reject');
     Route::get('admin/reporte/justificaciones', [ReportController::class, 'generarReporte'])->name('admin.reporte.justificaciones');
 });
 

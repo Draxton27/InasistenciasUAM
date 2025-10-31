@@ -45,5 +45,6 @@
             </div>
 
         </div>
+        @include('components.flash-messages')
     </body>
 </html>

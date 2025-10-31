@@ -43,6 +43,7 @@
 
         <!-- Form Validation Script -->
         <script src="{{ asset('js/form-validation.js') }}"></script>
+        @include('components.flash-messages')
         @stack('scripts')
     </body>
 </html>

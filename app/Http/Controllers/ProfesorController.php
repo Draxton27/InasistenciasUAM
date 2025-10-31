@@ -77,7 +77,8 @@ class ProfesorController extends Controller
     if ($validator->fails()) {
         return redirect()->back()
             ->withErrors($validator)
-            ->withInput();
+            ->withInput()
+            ->with('error', 'Corrige los errores del formulario.');
     }
 
     $data = $request->only('nombre', 'email');
@@ -102,7 +103,7 @@ class ProfesorController extends Controller
             $file->move($destination, $filename);
             $data['foto'] = 'profesores/' . $filename;
         } else {
-            return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+            return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput()->with('error', 'El archivo de foto no es válido.');
         }
     }
 
@@ -177,7 +178,8 @@ class ProfesorController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Corrige los errores del formulario.');
         }
 
         $data = $request->only('nombre', 'email');
@@ -196,7 +198,7 @@ class ProfesorController extends Controller
                 $file->move($destination, $filename);
                 $data['foto'] = 'profesores/' . $filename;
             } else {
-                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput()->with('error', 'El archivo de foto no es válido.');
             }
         }
 
@@ -279,7 +281,7 @@ class ProfesorController extends Controller
                 $file->move($destination, $filename);
                 $data['foto'] = 'profesores/' . $filename;
             } else {
-                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput();
+                return back()->withErrors(['foto' => 'El archivo de foto no es válido.'])->withInput()->with('error', 'El archivo de foto no es válido.');
             }
         }
 

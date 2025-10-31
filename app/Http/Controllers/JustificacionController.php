@@ -16,7 +16,29 @@ use Illuminate\Support\Facades\Storage;
 
 class JustificacionController extends Controller
 {
-    public function rechazar(Request $request, Justificacion $justificacion)
+    /**
+     * Sirve el archivo adjunto respetando autorización.
+     */
+    public function file(Justificacion $justificacion)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            abort(401);
+        }
+
+        $puedeVer = $user->id === $justificacion->user_id || in_array($user->role, ['admin', 'profesor']);
+        if (!$puedeVer) {
+            abort(403);
+        }
+
+        if (!$justificacion->archivo || !Storage::disk('public')->exists($justificacion->archivo)) {
+            abort(404);
+        }
+
+        $path = storage_path('app/public/' . $justificacion->archivo);
+        return response()->file($path);
+    }
+    public function reject(Request $request, Justificacion $justificacion)
 {
     $request->validate([
         'comentario' => 'required|string|max:5000',
@@ -86,7 +108,7 @@ class JustificacionController extends Controller
             $file->move($destination, $filename);
             $archivoPath = 'justificaciones/' . $filename;
         } else {
-            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
+            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput()->with('error', 'El archivo no es válido.');
         }
     }
 
@@ -125,13 +147,15 @@ public function destroyAndCreate(Justificacion $justificacion)
         abort(403, 'No tienes permiso para eliminar esta justificación.');
     }
 
-    if ($justificacion->archivo && \Storage::disk('public')->exists($justificacion->archivo)) {
-        \Storage::disk('public')->delete($justificacion->archivo);
+    if ($justificacion->archivo && Storage::disk('public')->exists($justificacion->archivo)) {
+        Storage::disk('public')->delete($justificacion->archivo);
     }
 
     $justificacion->delete();
 
-    return redirect()->route('justificaciones.create');
+    return redirect()
+        ->route('justificaciones.create')
+        ->with('info', 'Justificación eliminada. Ahora puedes crear una nueva.');
 }
 
 public function edit($id)
@@ -159,8 +183,8 @@ public function update(Request $request, $id)
         $file = $request->file('archivo');
         if ($file->isValid()) {
             // Eliminar archivo anterior si existe
-            if ($justificacion->archivo && \Storage::disk('public')->exists($justificacion->archivo)) {
-                \Storage::disk('public')->delete($justificacion->archivo);
+            if ($justificacion->archivo && Storage::disk('public')->exists($justificacion->archivo)) {
+                Storage::disk('public')->delete($justificacion->archivo);
             }
             $filename = uniqid() . '_' . $file->getClientOriginalName();
             $destination = storage_path('app/public/justificaciones');
@@ -170,7 +194,7 @@ public function update(Request $request, $id)
             $file->move($destination, $filename);
             $justificacion->archivo = 'justificaciones/' . $filename;
         } else {
-            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput();
+            return back()->withErrors(['archivo' => 'El archivo no es válido.'])->withInput()->with('error', 'El archivo no es válido.');
         }
     }
 

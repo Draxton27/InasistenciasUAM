@@ -86,7 +86,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Archivo Adjunto
                 </label>
-                <a href="{{ asset('storage/' . $justificacion->archivo) }}" target="_blank"
+                     <a href="{{ route('justificaciones.file', $justificacion->id) }}" target="_blank"
                    class="inline-flex items-center gap-2 px-3 py-2 text-sm text-[#009CA9] bg-[#009CA9]/10 rounded-lg hover:bg-[#009CA9]/20 transition-colors">
                     <i class="fas fa-paperclip"></i>
                     <span>Ver archivo adjunto</span>
@@ -101,7 +101,7 @@
             Motivo del Rechazo
         </h3>
         
-        <form action="{{ route('admin.justificaciones.rechazar', $justificacion->id) }}" method="POST">
+    <form action="{{ route('admin.justificaciones.reject', $justificacion->id) }}" method="POST" class="js-confirm" data-confirm="¿Rechazar esta justificación? Se registrará el comentario y se notificará al estudiante." data-confirm-text="Sí, rechazar" data-cancel-text="Cancelar">
             @csrf
             @method('PATCH')
             

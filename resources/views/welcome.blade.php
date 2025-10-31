@@ -6,6 +6,7 @@
     <title>Justificaciones</title>
     <link rel="icon" type="image/png" href="{{ asset('images/uam.png') }}"> 
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary: #009CA9;
@@ -247,5 +248,6 @@
                 Managua, Nicaragua.
             </div>
         </div>
+    @include('components.flash-messages')
 </body>
 </html>

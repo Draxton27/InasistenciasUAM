@@ -13,7 +13,7 @@ class ReprogramacionController extends Controller
     {
         // Solo permitir si la justificación está aceptada y no tiene reprogramación
         if ($justificacion->estado !== 'aceptada' || $justificacion->reprogramacion) {
-            return redirect()->back()->withErrors('No se puede agregar reprogramación a esta justificación.');
+            return redirect()->back()->withErrors('No se puede agregar reprogramación a esta justificación.')->with('error', 'No se puede agregar reprogramación a esta justificación.');
         }
         return view('reprogramaciones.create', compact('justificacion'));
     }
@@ -33,7 +33,7 @@ class ReprogramacionController extends Controller
 
         $justificacion = Justificacion::findOrFail($request->justificacion_id);
         if ($justificacion->estado !== 'aceptada' || $justificacion->reprogramacion) {
-            return redirect()->back()->withErrors('No se puede agregar reprogramación a esta justificación.');
+            return redirect()->back()->withErrors('No se puede agregar reprogramación a esta justificación.')->with('error', 'No se puede agregar reprogramación a esta justificación.');
         }
 
         Reprogramacion::create([

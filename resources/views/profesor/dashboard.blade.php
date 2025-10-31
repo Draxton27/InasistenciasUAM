@@ -47,7 +47,7 @@
 
                 @if ($j->archivo)
                     <div class="mt-4">
-                        <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
+                            <a href="{{ route('justificaciones.file', $j->id) }}" target="_blank"
                            class="text-sm text-[#009CA9] dark:text-[#009CA9] hover:underline flex items-center gap-1">
                             <i class="fas fa-paperclip"></i> Ver archivo adjunto
                         </a>

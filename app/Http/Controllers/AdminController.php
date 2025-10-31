@@ -25,7 +25,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('justificaciones', 'conteo', 'clases'));
     }
 
-    public function aprobar($id)
+    public function approve($id)
     {
         $just = Justificacion::findOrFail($id);
         $just->estado = 'aceptada';
@@ -37,7 +37,7 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Justificación aprobada.');
     }
 
-    public function rechazar($id, Request $request)
+    public function reject($id, Request $request)
     {
         $request->validate([
             'comentario' => 'required|string|max:1000',
@@ -62,7 +62,7 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Justificación rechazada y rechazo registrado.');
     }
 
-    public function showRechazar($id)
+    public function showReject($id)
     {
         $justificacion = Justificacion::with(['user', 'claseProfesor.clase'])->findOrFail($id);
         return view('admin.justificaciones.rechazar', compact('justificacion'));

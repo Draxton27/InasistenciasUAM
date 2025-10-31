@@ -52,7 +52,7 @@
 
             @if ($j->archivo)
                 <div class="mt-2 sm:mt-4">
-                    <a href="{{ asset('storage/' . $j->archivo) }}" target="_blank"
+                        <a href="{{ route('justificaciones.file', $j->id) }}" target="_blank"
                        class="text-xs sm:text-sm text-[#009CA9] dark:text-[#009CA9] hover:underline flex items-center gap-1">
                         <i class="fas fa-paperclip"></i> Ver archivo adjunto
                     </a>
@@ -111,7 +111,7 @@
                         <i class="fas fa-edit mr-1"></i> Editar
                     </a>
                     <form action="{{ route('justificaciones.destroy', $j->id) }}" method="POST" 
-                          onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta justificación?')" class="w-full sm:w-auto">
+                          class="w-full sm:w-auto js-confirm" data-confirm="¿Estás seguro de que quieres eliminar esta justificación? Esta acción no se puede deshacer." data-confirm-text="Sí, eliminar" data-cancel-text="Cancelar">
                         @csrf
                         @method('DELETE')
                         <button type="submit" 

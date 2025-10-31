@@ -80,12 +80,11 @@
                                        class="text-[#009CA9] hover:text-[#007c8b]">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('clases.destroy', $clase) }}" method="POST" class="inline">
+                                    <form action="{{ route('clases.destroy', $clase) }}" method="POST" class="inline js-confirm" data-confirm="¿Eliminar esta clase? Los datos asociados podrían verse afectados." data-confirm-text="Sí, eliminar" data-cancel-text="Cancelar">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
-                                                class="text-red-600 hover:text-red-900"
-                                                onclick="return confirm('¿Estás seguro de eliminar esta clase?')">
+                                                class="text-red-600 hover:text-red-900">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
