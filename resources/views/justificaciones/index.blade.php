@@ -43,10 +43,8 @@
                         {{ \Carbon\Carbon::parse($j->fecha)->translatedFormat('d F, Y') }} &nbsp;|&nbsp; {{ ucfirst($j->tipo_constancia) }}
                     </p>
                 </div>
-                <span class="mt-2 md:mt-0 text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full 
-                    {{ $j->estado === 'aceptada' ? 'bg-green-100 text-green-800' : 
-                       ($j->estado === 'rechazada' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                    {{ ucfirst($j->estado) }}
+                <span class="{{ $j->state()->color() }}">
+                    {{ $j->state()->label() }}
                 </span>
             </div>
 
@@ -88,7 +86,7 @@
                 </div>
             @endif
 
-            @if ($j->rechazo)
+            @if ($j->rechazos->isNotEmpty())
                 <div class="mt-2 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                     <div class="flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
                         <i class="fas fa-times-circle text-red-500"></i>
@@ -97,7 +95,7 @@
                                 Justificación Rechazada
                             </h4>
                             <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3">
-                                {{ $j->rechazo->comentario }}
+                                 {{ $j->rechazos->first()->comentario }}
                             </p>
                         </div>
                     </div>

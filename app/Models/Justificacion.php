@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\States\Justificacion\PendienteState;
+use App\States\Justificacion\AprobadaState;
+use App\States\Justificacion\RechazadaState;
 
 class Justificacion extends Model
 {
@@ -39,10 +42,11 @@ class Justificacion extends Model
         return $this->hasOne(Reprogramacion::class);
     }
 
-    public function rechazo()
-    {
-        return $this->hasOne(Rechazo::class);
-    }
+    public function rechazos()
+{
+    return $this->hasMany(\App\Models\Rechazo::class)
+                ->latest(); 
+}
 
     //Gestión de estados
     public function setEstado($estado)
@@ -50,6 +54,8 @@ class Justificacion extends Model
         $this->estado = $estado;
         $this->save();
     }
+
+    
 
     //Retorna la clase de estado correspondiente según el valor actual. 
     public function state()
