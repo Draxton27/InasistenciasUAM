@@ -4,41 +4,58 @@ namespace App\States\Justificacion;
 
 use App\Models\Justificacion;
 
-abstract class BaseState implements JustificacionState
+abstract class BaseState
 {
-    protected string $nombre;
+    public static string $name;
 
-    public function __construct()
+    // Método que se ejecuta al entrar en el estado
+    public function onEnter(Justificacion $justificacion, ?array $data = null): void
     {
-        $this->nombre = class_basename(static::class);
+        $justificacion->estado = static::$name;
+        $justificacion->save();
     }
 
-    public function revisar(Justificacion $justificacion)
+    // Acciones permitidas
+    public function aprobar(Justificacion $justificacion)
     {
-        throw new \Exception("No se puede pasar a revisión desde el estado actual.");
+        throw new \Exception("No se puede aprobar desde el estado " . static::$name);
     }
 
-    public function aceptar(Justificacion $justificacion)
+    public function rechazar(Justificacion $justificacion, array $data)
     {
-        throw new \Exception("No se puede aceptar desde el estado actual.");
+        throw new \Exception("No se puede rechazar desde el estado " . static::$name);
     }
 
-    public function rechazar(Justificacion $justificacion, $comentario = null)
-    {
-        throw new \Exception("No se puede rechazar desde el estado actual.");
-    }
-
+    // Métodos para mostrar en Blade
     public function label(): string
     {
-        return ucfirst(str_replace('State', '', $this->nombre));
+        return ucfirst(static::$name);
     }
 
     public function color(): string
     {
-        return match ($this->nombre) {
-            'AprobadaState' => 'bg-green-100 text-green-800',
-            'RechazadaState' => 'bg-red-100 text-red-800',
-            default => 'bg-yellow-100 text-yellow-800',
+        return match(static::$name) {
+            'pendiente' => 'bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs',
+            'aceptada'  => 'bg-green-100 text-green-800 px-2 py-1 rounded text-xs',
+            'rechazada' => 'bg-red-100 text-red-800 px-2 py-1 rounded text-xs',
+            'en_revision' => 'bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs',
+            default => 'bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs',
         };
+    }
+
+    // Control de permisos para acciones en la vista
+    public function canEdit(): bool
+    {
+        return static::$name === 'pendiente';
+    }
+
+    public function canDelete(): bool
+    {
+        return static::$name === 'pendiente';
+    }
+
+    public function showRechazo(): bool
+    {
+        return static::$name === 'rechazada';
     }
 }

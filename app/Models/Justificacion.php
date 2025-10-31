@@ -4,8 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\States\Justificacion\PendienteState;
-use App\States\Justificacion\AprobadaState;
+use App\Models\User;
+use App\Models\ClaseProfesor;
+use App\Models\Reprogramacion;
+use App\Models\Rechazo;
+use App\States\Justificacion\RegistradaState;
+use App\States\Justificacion\EnRevisionState;
+use App\States\Justificacion\AceptadaState;
 use App\States\Justificacion\RechazadaState;
 
 class Justificacion extends Model
@@ -26,7 +31,9 @@ class Justificacion extends Model
         'estado',
     ];
 
-    //relaciones con otros modelos
+    /* =========================
+       RELACIONES
+    ============================*/
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -42,30 +49,39 @@ class Justificacion extends Model
         return $this->hasOne(Reprogramacion::class);
     }
 
-    public function rechazos()
-{
-    return $this->hasMany(\App\Models\Rechazo::class)
-                ->latest(); 
-}
+    public function rechazo()
+    {
+        return $this->hasMany(Rechazo::class)->latest();
+    }
 
-    //Gestión de estados
-    public function setEstado($estado)
+    /* =========================
+       GESTIÓN DE ESTADOS
+    ============================*/
+    public function setEstado(string $estado)
     {
         $this->estado = $estado;
         $this->save();
     }
 
-    
-
-    //Retorna la clase de estado correspondiente según el valor actual. 
     public function state()
-    {
-        return match ($this->estado) {
-            'registrada' => new \App\States\Justificacion\RegistradaState(),
-            'en_revision' => new \App\States\Justificacion\EnRevisionState(),
-            'aceptada' => new \App\States\Justificacion\AceptadaState(),
-            'rechazada' => new \App\States\Justificacion\RechazadaState(),
-            default => new \App\States\Justificacion\RegistradaState(),
-        };
-    }
+{
+    return match ($this->estado) {
+        'registrada' => new \App\States\Justificacion\RegistradaState(),
+        'en_revision' => new \App\States\Justificacion\EnRevisionState(),
+        'aceptada' => new \App\States\Justificacion\AceptadaState(),
+        'rechazada' => new \App\States\Justificacion\RechazadaState(),
+        default => new \App\States\Justificacion\RegistradaState(),
+    };
+}
+
+public function aprobar()
+{
+    $this->state()->aprobar($this);
+}
+
+public function rechazar(array $data)
+{
+    $this->state()->rechazar($this, $data);
+}
+
 }

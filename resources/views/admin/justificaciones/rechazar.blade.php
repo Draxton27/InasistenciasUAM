@@ -54,19 +54,9 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Estado Actual
                 </label>
-                @if($justificacion->estado === 'aceptada')
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                        <i class="fas fa-check mr-1"></i> Aceptada
-                    </span>
-                @elseif($justificacion->estado === 'rechazada')
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                        <i class="fas fa-times mr-1"></i> Rechazada
-                    </span>
-                @else
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                        <i class="fas fa-clock mr-1"></i> Pendiente
-                    </span>
-                @endif
+                <span class="{{ $justificacion->state()->color() }}">
+                    {!! $justificacion->state()->label() !!}
+                </span>
             </div>
         </div>
 
@@ -93,46 +83,57 @@
                 </a>
             </div>
         @endif
+
+        @if($justificacion->rechazo->isNotEmpty())
+            <div class="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <h4 class="text-sm font-medium text-red-800 dark:text-red-200 mb-2">Motivo del Rechazo</h4>
+                <p class="text-sm text-red-700 dark:text-red-300">
+                    {{ $justificacion->rechazo->first()->comentario }}
+                </p>
+            </div>
+        @endif
     </div>
 
     <!-- Formulario de Rechazo -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Motivo del Rechazo
-        </h3>
-        
-        <form action="{{ route('admin.justificaciones.rechazar', $justificacion->id) }}" method="POST">
-            @csrf
-            @method('PATCH')
+    @if($justificacion->estado !== 'rechazada')
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                Motivo del Rechazo
+            </h3>
             
-            <div class="mb-6">
-                <label for="comentario" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Comentario de Rechazo <span class="text-red-500">*</span>
-                </label>
-                <textarea 
-                    id="comentario"
-                    name="comentario"
-                    rows="6"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] dark:bg-gray-700 dark:text-white"
-                    placeholder="Explica detalladamente el motivo del rechazo de esta justificación..."
-                    required>{{ old('comentario') }}</textarea>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Este comentario será registrado como parte del rechazo y será visible para el estudiante.
-                </p>
-            </div>
-            
-            <div class="flex gap-4 justify-end">
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                    Cancelar
-                </a>
-                <button type="submit" 
-                        class="px-6 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                    <i class="fas fa-times mr-2"></i>
-                    Rechazar Justificación
-                </button>
-            </div>
-        </form>
-    </div>
+            <form action="{{ route('admin.justificaciones.rechazar', $justificacion->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                
+                <div class="mb-6">
+                    <label for="comentario" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Comentario de Rechazo <span class="text-red-500">*</span>
+                    </label>
+                    <textarea 
+                        id="comentario"
+                        name="comentario"
+                        rows="6"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#009CA9] focus:border-[#009CA9] dark:bg-gray-700 dark:text-white"
+                        placeholder="Explica detalladamente el motivo del rechazo de esta justificación..."
+                        required>{{ old('comentario') }}</textarea>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Este comentario será registrado como parte del rechazo y será visible para el estudiante.
+                    </p>
+                </div>
+                
+                <div class="flex gap-4 justify-end">
+                    <a href="{{ route('admin.dashboard') }}" 
+                       class="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        Rechazar Justificación
+                    </button>
+                </div>
+            </form>
+        </div>
+    @endif
 </div>
-@endsection 
+@endsection
