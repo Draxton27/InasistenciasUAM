@@ -13,7 +13,7 @@ window.Swal = Swal;
 
 Alpine.start();
 
-// Real-time notifications via Laravel Echo (Pusher or compatible)
+// Notificaciones en tiempo real con Laravel Echo y Pusher
 if (typeof window !== "undefined") {
     window.Pusher = Pusher;
     const key = import.meta.env.VITE_PUSHER_APP_KEY;
@@ -117,46 +117,6 @@ if (typeof window !== "undefined") {
                     }
                 } catch (e) {
                     console.warn("Notification handling error:", e);
-                }
-            })
-            .listen(".UserNotified", (e) => {
-                try {
-                    const data = e.payload || e;
-                    if (window.Swal) {
-                        window.Swal.fire({
-                            toast: true,
-                            position: "top-end",
-                            icon:
-                                data.status === "aceptada"
-                                    ? "success"
-                                    : data.status === "rechazada"
-                                    ? "error"
-                                    : "info",
-                            title: data.title || "Notificación",
-                            text: data.body || "",
-                            showConfirmButton: false,
-                            timer: 4000,
-                        });
-                    }
-                    const badge = document.querySelector(
-                        "[data-notifications-badge]"
-                    );
-                    if (badge) {
-                        const val = parseInt(badge.textContent || "0", 10) || 0;
-                        badge.textContent = String(val + 1);
-                        badge.classList.remove("hidden");
-                    }
-
-                    // Actualizar también el estado de la justificación
-                    if (data && data.justification_id && data.status) {
-                        updateJustificationStatusPill(
-                            data.justification_id,
-                            data.status,
-                            data.reason
-                        );
-                    }
-                } catch (err) {
-                    console.warn("UserNotified handling error:", err);
                 }
             });
     }

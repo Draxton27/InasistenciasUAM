@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
 class ObserverServiceProvider extends ServiceProvider
 {
     /**
-     * Publish–Subscribe (GoF): el Sujeto se registra como singleton por request.
+     * El Sujeto se registra como singleton por request.
      * No conoce a sus observadores; solo expone attach/detach/notify.
      */
     public function register(): void

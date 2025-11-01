@@ -29,25 +29,38 @@ class JustificationStatusChangedNotification extends Notification
     }
 
     /** Estructura persistida en la tabla notifications. */
-    public function toDatabase(object $notifiable): array
+    public function toDatabase($notifiable): array
     {
+        return $this->payload($notifiable);
+    }
+
+    /** Payload emitido por websockets hacia el cliente. */
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage($this->payload($notifiable));
+    }
+
+    private function payload($notifiable): array
+    {
+        $title = $this->status === 'aceptada'
+            ? 'Justificación aprobada'
+            : ($this->status === 'rechazada'
+                ? 'Justificación rechazada'
+                : 'Actualización de justificación');
+
+        $body = $this->status === 'aceptada'
+            ? 'Tu justificación ha sido aprobada.'
+            : 'Tu justificación ha sido rechazada.' . ($this->reason ? ' Motivo: ' . $this->reason : '');
+
         return [
-            'title' => $this->status === 'aceptada' ? 'Justificación aprobada' : 'Justificación rechazada',
-            'body' => $this->status === 'aceptada'
-                ? 'Tu justificación ha sido aprobada.'
-                : 'Tu justificación ha sido rechazada.'.($this->reason ? ' Motivo: '.$this->reason : ''),
-            'reason' => $this->reason,
+            'title' => $title,
+            'body' => $body,
             'status' => $this->status,
+            'reason' => $this->reason,
             'justification_id' => $this->justificationId,
             'actor_id' => $this->actorId,
             'actor_name' => $this->actorName,
             'url' => route('justificaciones.index'),
         ];
-    }
-
-    /** Payload emitido por websockets hacia el cliente. */
-    public function toBroadcast(object $notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage($this->toDatabase($notifiable));
     }
 }
