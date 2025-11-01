@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\JustificationApproved;
-use App\Events\JustificationRejected;
 use App\Models\Justificacion;
 use App\Models\Rechazo;
+use App\Domain\Justificacion\Observer\Contracts\JustificationSubject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function __construct(private JustificationSubject $subject) {}
     public function index(Request $request)
     {
         $conteo = [
@@ -38,8 +38,8 @@ class AdminController extends Controller
         // Eliminar rechazo si existe
         $just->rechazo()->delete();
 
-        // Notify owner via event
-        event(new JustificationApproved($just, Auth::user()));
+        // Notificar vía Subject/Observer explícito (sin listeners)
+        $this->subject->notify($just, 'aceptada', Auth::user(), null);
 
         return redirect()->route('admin.dashboard')->with('success', 'Justificación aprobada.');
     }
@@ -58,10 +58,9 @@ class AdminController extends Controller
             'comentario' => $request->comentario,
         ]);
 
-        // Notify owner via event
-        event(new JustificationRejected($just, Auth::user(), $request->comentario));
+        // Notificar vía Subject/Observer explícito (sin listeners)
+        $this->subject->notify($just, 'rechazada', Auth::user(), $request->comentario);
 
-        // Si es una petición AJAX, devolver JSON
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,

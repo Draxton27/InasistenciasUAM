@@ -31,7 +31,7 @@
     </div>
 
     @forelse ($justificaciones as $j)
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-xl p-4 sm:p-6 mb-6 transition flex flex-col gap-3">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-xl p-4 sm:p-6 mb-6 transition flex flex-col gap-3" data-justificacion-id="{{ $j->id }}">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-2 md:gap-4">
                 <div class="flex-1 min-w-0">
                     <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white truncate">
@@ -45,7 +45,7 @@
                 </div>
                 <span class="mt-2 md:mt-0 text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full 
                     {{ $j->estado === 'aceptada' ? 'bg-green-100 text-green-800' : 
-                       ($j->estado === 'rechazada' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                       ($j->estado === 'rechazada' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}" data-justificacion-status>
                     {{ ucfirst($j->estado) }}
                 </span>
             </div>
@@ -88,21 +88,19 @@
                 </div>
             @endif
 
-            @if ($j->rechazo)
-                <div class="mt-2 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div class="mt-2 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg {{ ($j->estado === 'rechazada' || $j->rechazo) ? '' : 'hidden' }}" data-justificacion-rechazo>
                     <div class="flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
                         <i class="fas fa-times-circle text-red-500"></i>
                         <div class="flex-1">
                             <h4 class="text-xs sm:text-sm font-medium text-red-800 dark:text-red-200 mb-1 sm:mb-2">
                                 Justificación Rechazada
                             </h4>
-                            <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3">
-                                {{ $j->rechazo->comentario }}
+                            <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 mb-2 sm:mb-3" data-justificacion-rechazo-text>
+                                {{ $j->rechazo->comentario ?? '' }}
                             </p>
                         </div>
                     </div>
                 </div>
-            @endif
 
             @if ($j->estado === 'pendiente')
                 <div class="flex flex-col sm:flex-row gap-2 mt-2">

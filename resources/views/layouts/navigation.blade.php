@@ -60,7 +60,7 @@
                             <div class="font-semibold text-sm">Notificaciones</div>
                             <a href="{{ route('notifications.index') }}" class="text-xs text-indigo-600 hover:underline">Ver todas</a>
                         </div>
-                        <div class="max-h-80 overflow-y-auto">
+                        <div class="max-h-80 overflow-y-auto" data-notifications-dropdown-list>
                             @forelse((Auth::check() ? Auth::user()->unreadNotifications()->latest()->take(5)->get() : collect()) as $n)
                                 <div class="px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex gap-2">
                                     <div class="mt-1">
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="px-3 py-4 text-sm text-gray-500">No hay notificaciones sin leer</div>
+                                <div class="px-3 py-4 text-sm text-gray-500" data-notifications-dropdown-empty>No hay notificaciones sin leer</div>
                             @endforelse
                         </div>
                         <div class="px-3 py-2 border-t border-gray-200 dark:border-gray-700">

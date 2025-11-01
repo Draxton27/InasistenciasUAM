@@ -16,9 +16,9 @@
                 </div>
 
                 @if($notifications->isEmpty())
-                    <p class="text-gray-500">Aún no hay notificaciones.</p>
-                @else
-                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <p class="text-gray-500" data-notifications-empty>Aún no hay notificaciones.</p>
+                @endif
+                <div class="divide-y divide-gray-200 dark:divide-gray-700" data-notifications-list>
                         @foreach($notifications as $n)
                             <div class="py-3 flex items-start gap-3 {{ is_null($n->read_at) ? 'bg-indigo-50 dark:bg-indigo-900/20' : '' }} rounded">
                                 <div class="mt-1">
@@ -50,12 +50,11 @@
                                 </div>
                             </div>
                         @endforeach
-                    </div>
+                </div>
 
-                    <div class="mt-4">
-                        {{ $notifications->links() }}
-                    </div>
-                @endif
+                <div class="mt-4">
+                    {{ $notifications->links() }}
+                </div>
             </div>
         </div>
     </div>
