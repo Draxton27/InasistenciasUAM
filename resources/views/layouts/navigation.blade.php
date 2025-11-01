@@ -46,8 +46,50 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <!-- Notifications + Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                <!-- Notifications Bell -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-regular fa-bell text-gray-600 dark:text-gray-300"></i>
+                        @php($unread = Auth::check() ? Auth::user()->unreadNotifications()->count() : 0)
+                        <span data-notifications-badge class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-medium leading-none text-white bg-red-600 rounded-full {{ $unread > 0 ? '' : 'hidden' }}">{{ $unread }}</span>
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg overflow-hidden z-50">
+                        <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                            <div class="font-semibold text-sm">Notificaciones</div>
+                            <a href="{{ route('notifications.index') }}" class="text-xs text-indigo-600 hover:underline">Ver todas</a>
+                        </div>
+                        <div class="max-h-80 overflow-y-auto">
+                            @forelse((Auth::check() ? Auth::user()->unreadNotifications()->latest()->take(5)->get() : collect()) as $n)
+                                <div class="px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex gap-2">
+                                    <div class="mt-1">
+                                        @if(($n->data['status'] ?? '') === 'aceptada')
+                                            <i class="fa-solid fa-circle-check text-green-600"></i>
+                                        @elseif(($n->data['status'] ?? '') === 'rechazada')
+                                            <i class="fa-solid fa-circle-xmark text-red-600"></i>
+                                        @else
+                                            <i class="fa-solid fa-bell text-indigo-600"></i>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium">{{ $n->data['title'] ?? 'Notification' }}</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-300">{{ $n->data['body'] ?? '' }}</div>
+                                        <div class="text-[10px] text-gray-400">{{ $n->created_at->diffForHumans() }}</div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="px-3 py-4 text-sm text-gray-500">No hay notificaciones sin leer</div>
+                            @endforelse
+                        </div>
+                        <div class="px-3 py-2 border-t border-gray-200 dark:border-gray-700">
+                            <form method="POST" action="{{ route('notifications.readAll') }}">
+                                @csrf
+                                <button class="w-full text-xs text-gray-600 hover:text-gray-800 js-confirm" data-confirm="¿Marcar todas como leídas?">Marcar todas como leídas</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
@@ -92,9 +134,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            @php $role = Auth::user()->role; @endphp
-
-            @if ($role === 'admin')
+            @if (Auth::check() && Auth::user()->role === 'admin')
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Admin') }}
                 </x-responsive-nav-link>
@@ -104,7 +144,7 @@
                 <x-responsive-nav-link :href="route('clases.index')" :active="request()->routeIs('clases.index')">
                     {{ __('Clases') }}
                 </x-responsive-nav-link>
-            @elseif ($role === 'profesor')
+            @elseif (Auth::check() && Auth::user()->role === 'profesor')
                 <x-responsive-nav-link :href="route('profesor.dashboard')" :active="request()->routeIs('profesor.*')">
                     {{ __('Justificaciones') }}
                 </x-responsive-nav-link>

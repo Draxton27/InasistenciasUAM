@@ -12,6 +12,7 @@ use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\Auth\LoginRedirectController;
 use App\Http\Controllers\ReprogramacionController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/perfil/estudiante', [EstudianteController::class, 'editProfile'])->name('estudiante.profile.edit');
     Route::put('/perfil/estudiante', [EstudianteController::class, 'updateProfile'])->name('estudiante.profile.update');
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
 });
 
 

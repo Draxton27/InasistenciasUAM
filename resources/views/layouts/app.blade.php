@@ -4,6 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        @auth
+            <meta name="user-id" content="{{ (int)Auth::id() }}">
+        @endauth
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -18,8 +21,8 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -43,6 +46,11 @@
 
         <!-- Form Validation Script -->
         <script src="{{ asset('js/form-validation.js') }}"></script>
+        @auth
+        <script>
+            window.App = Object.assign({}, window.App || {}, { userId: {{ (int)Auth::id() }} })
+        </script>
+        @endauth
         @include('components.flash-messages')
         @stack('scripts')
     </body>
