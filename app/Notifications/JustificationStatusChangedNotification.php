@@ -35,8 +35,9 @@ class JustificationStatusChangedNotification extends Notification
             'title' => $this->status === 'aceptada' ? 'Justificación aprobada' : 'Justificación rechazada',
             'body' => $this->status === 'aceptada'
                 ? 'Tu justificación ha sido aprobada.'
-                : 'Tu justificación ha sido rechazada.'.($this->reason ? ' Motivo: '.$this->reason : ''),
+                : 'Tu justificación ha sido rechazada.' . ($this->reason ? ' Motivo: ' . $this->reason : ''),
             'status' => $this->status,
+            'reason' => $this->reason,
             'justification_id' => $this->justificationId,
             'actor_id' => $this->actorId,
             'actor_name' => $this->actorName,

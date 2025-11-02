@@ -4,14 +4,12 @@ namespace App\Listeners;
 
 use App\Events\JustificationApproved;
 use App\Events\JustificationRejected;
-use App\Events\UserNotified;
 use App\Notifications\JustificationStatusChangedNotification;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Observador que escucha aprobaciones/rechazos de justificaciones
- * y envía una notificación (db + broadcast). Además dispara un evento
- * de broadcast inmediato (UserNotified) como refuerzo visual en tiempo real.
+ * y envía una notificación (db + broadcast).
  */
 class SendJustificationStatusNotification
 {
@@ -44,7 +42,7 @@ class SendJustificationStatusNotification
         }
 
         try {
-            // 1) Notificación (db + broadcast)
+            // Notificación (db + broadcast)
             $notification = new JustificationStatusChangedNotification(
                 status: $status,
                 justificationId: $just->id,
@@ -53,19 +51,6 @@ class SendJustificationStatusNotification
                 reason: $reason,
             );
             $user->notify($notification); // Envia por canales definidos en via()
-
-            // 2) Broadcast inmediato como refuerzo (toast en tiempo real)
-            event(new UserNotified($user->id, [
-                'title' => $status === 'aceptada' ? 'Justificación aprobada' : 'Justificación rechazada',
-                'body'  => $status === 'aceptada'
-                    ? 'Tu justificación ha sido aprobada.'
-                    : 'Tu justificación ha sido rechazada.' . ($reason ? ' Motivo: ' . $reason : ''),
-                'status' => $status,
-                'justification_id' => $just->id,
-                'actor_id'  => $event->actor?->id,
-                'actor_name'=> $event->actor?->name,
-                'url' => route('justificaciones.index'),
-            ]));
 
             Log::info('Observer: notification sent', [
                 'user_id' => $user->id,
