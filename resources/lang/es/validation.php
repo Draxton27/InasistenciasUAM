@@ -1,5 +1,5 @@
 <?php
-
+// El paquete lang\es en el paquete de resources representa 
 return [
     'accepted' => 'El campo :attribute debe ser aceptado.',
     'accepted_if' => 'El campo :attribute debe ser aceptado cuando :other es :value.',

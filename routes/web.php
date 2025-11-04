@@ -1,18 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Presentation\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JustificacionController;
-use App\Http\Controllers\ProfesorController;
-use App\Http\Middleware\AdminMiddleware;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ProfesorDashboardController;
-use App\Http\Controllers\EstudianteController;
-use App\Http\Controllers\ClaseController;
-use App\Http\Controllers\Auth\LoginRedirectController;
-use App\Http\Controllers\ReprogramacionController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\NotificationController;
+use App\Presentation\Http\Controllers\JustificacionController;
+use App\Presentation\Http\Controllers\ProfesorController;
+use App\Presentation\Http\Middleware\AdminMiddleware;
+use App\Presentation\Http\Controllers\AdminController;
+use App\Presentation\Http\Controllers\ProfesorDashboardController;
+use App\Presentation\Http\Controllers\EstudianteController;
+use App\Presentation\Http\Controllers\ClaseController;
+use App\Presentation\Http\Controllers\Auth\LoginRedirectController;
+use App\Presentation\Http\Controllers\ReprogramacionController;
+use App\Presentation\Http\Controllers\ReportController;
+use App\Presentation\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/justificaciones/{justificacion}', [JustificacionController::class, 'destroy'])->name('justificaciones.destroy');
     Route::post('/justificaciones/{justificacion}/destroy-and-create', [JustificacionController::class, 'destroyAndCreate'])->name('justificaciones.destroy-and-create');
     Route::get('/justificaciones/{justificacion}/archivo', [JustificacionController::class, 'file'])->name('justificaciones.file');
-    Route::resource('justificaciones', App\Http\Controllers\JustificacionController::class);
+    Route::resource('justificaciones', App\Presentation\Http\Controllers\JustificacionController::class);
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
@@ -53,7 +53,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::resource('clases', ClaseController::class);
 });
 
-use App\Models\ClaseProfesor;
+use App\Infrastructure\Persistence\Eloquent\Models\ClaseProfesor;
 
 Route::get('/api/profesor/{id}/clases', function ($id) {
     $clases = ClaseProfesor::with('clase')
@@ -84,7 +84,7 @@ Route::middleware(['auth', 'profesor'])->group(function () {
     Route::put('/perfil/profesor', [ProfesorController::class, 'updateProfile'])->name('profesor.profile.update');
     Route::get('/reprogramaciones/create/{justificacion}', [ReprogramacionController::class, 'create'])->name('reprogramaciones.create');
     Route::post('/reprogramaciones', [ReprogramacionController::class, 'store'])->name('reprogramaciones.store');
-    Route::get('/reprogramaciones/{reprogramacion}/edit', [\App\Http\Controllers\ReprogramacionController::class, 'edit'])->name('reprogramaciones.edit');
-    Route::put('/reprogramaciones/{reprogramacion}', [\App\Http\Controllers\ReprogramacionController::class, 'update'])->name('reprogramaciones.update');
+    Route::get('/reprogramaciones/{reprogramacion}/edit', [\App\Presentation\Http\Controllers\ReprogramacionController::class, 'edit'])->name('reprogramaciones.edit');
+    Route::put('/reprogramaciones/{reprogramacion}', [\App\Presentation\Http\Controllers\ReprogramacionController::class, 'update'])->name('reprogramaciones.update');
 });
 require __DIR__.'/auth.php';

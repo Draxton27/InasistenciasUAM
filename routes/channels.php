@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-use App\Models\User;
+use App\Infrastructure\Persistence\Eloquent\Models\User;
 
 /**
  * Autoriza que cada usuario escuche su propio canal privado: App.Models.User.{id}

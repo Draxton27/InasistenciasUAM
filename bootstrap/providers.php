@@ -1,8 +1,8 @@
 <?php
 
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\EventServiceProvider::class,
-    App\Providers\BroadcastServiceProvider::class,
-    App\Providers\ObserverServiceProvider::class,
+    App\Infrastructure\Providers\AppServiceProvider::class,
+    App\Infrastructure\Providers\EventServiceProvider::class,
+    App\Infrastructure\Providers\BroadcastServiceProvider::class,
+    App\Infrastructure\Providers\ObserverServiceProvider::class,
 ];

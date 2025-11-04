@@ -2,9 +2,15 @@
 
 namespace App\Domain\Justificacion\Observer\Contracts;
 
-use App\Models\Justificacion;
-use App\Models\User;
+use App\Domain\Entities\Justificacion;
+use App\Domain\Entities\User;
 
+/**
+ * Interface: JustificationSubject
+ * Capa: Domain
+ * Patrón: Observer (GoF)
+ * Define el contrato para el sujeto observable de justificaciones
+ */
 interface JustificationSubject
 {
     public function attach(JustificationObserver $observer): void;
@@ -12,6 +18,10 @@ interface JustificationSubject
 
     /**
      * Notifica a los observadores un cambio de estado de la justificación.
+     * @param Justificacion $justificacion Entidad de dominio de justificación
+     * @param string $estado Nuevo estado
+     * @param User|null $actor Usuario que realizó la acción
+     * @param string|null $motivo Motivo del cambio
      */
     public function notify(
         Justificacion $justificacion,
@@ -20,3 +30,4 @@ interface JustificationSubject
         ?string $motivo = null
     ): void;
 }
+

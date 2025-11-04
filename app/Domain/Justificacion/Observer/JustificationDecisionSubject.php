@@ -3,11 +3,17 @@
 namespace App\Domain\Justificacion\Observer;
 
 use SplObjectStorage;
-use App\Models\Justificacion;
-use App\Models\User;
+use App\Domain\Entities\Justificacion;
+use App\Domain\Entities\User;
 use App\Domain\Justificacion\Observer\Contracts\JustificationObserver;
 use App\Domain\Justificacion\Observer\Contracts\JustificationSubject;
 
+/**
+ * Clase Concreta: JustificationDecisionSubject
+ * Capa: Domain
+ * Patrón: Observer (GoF)
+ * Implementación concreta del sujeto observable para justificaciones
+ */
 class JustificationDecisionSubject implements JustificationSubject
 {
     private SplObjectStorage $observers;
@@ -38,3 +44,4 @@ class JustificationDecisionSubject implements JustificationSubject
         }
     }
 }
+
